@@ -1,0 +1,73 @@
+<ion-header class="header-vine">
+	<ion-toolbar>
+		<ion-menu-button></ion-menu-button>
+		<ion-title>{{name}}</ion-title>
+		<div class="user-profile-pic--header">
+			<img *ngIf="!photoURL" src="http://via.placeholder.com/640x480?text=Image" alt="User Profile Image" />
+			<img *ngIf="photoURL" [src]="photoURL" alt="User Profile Image" />
+		</div>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content class="content-bg">
+
+	<ion-grid no-padding>
+		<ion-row>
+			<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+				<ion-list class="others-profile-wrap">
+					<div class="others-profile">
+						<ion-item>
+							<ion-avatar slot="start">
+									<img *ngIf="!photoURL" src="http://via.placeholder.com/640x480?text=Image" alt="User Profile Image" />
+									<img *ngIf="photoURL" [src]="photoURL" alt="User Profile Image" />
+							</ion-avatar>
+							<ion-label>
+								<h2>{{email}}</h2>
+								<h3>{{phoneNumber}}</h3>
+							</ion-label>
+						</ion-item>
+						<div class="others-profile-address">
+							<p class="loc">
+								<span>Location :</span>
+								{{location}}
+							</p>
+							<p class="address">
+								<span>Address :</span>
+								{{homeAddress}}
+							</p>
+						</div>
+					</div> <!-- others-profile  -->
+				</ion-list>
+			</ion-col>
+		</ion-row>
+
+		<ion-row>
+			<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+
+					<!--  feeds list -->
+					<ion-list class="feed-list-wrap" *ngIf="activities.length && !loading">
+					<div class="feed-list" *ngFor="let activity of activities; let i = index">
+						<!-- <div *ngIf="i<=10"> -->
+						<ion-item>
+							<ion-avatar slot="start">
+							<img [src]="activity.photoURL" alt="Profile Image" />
+							</ion-avatar>
+							<ion-label>
+							<h3>{{activity.actor}}</h3>
+							<h5>{{activity.time | date:"medium"}}</h5>
+							</ion-label>
+						</ion-item>
+						<p class="post-snippet">{{activity.object}}</p>
+						<!-- </div> -->
+					</div>
+					</ion-list>
+					<div class="row" *ngIf="!activities.length && !loading">
+					<div class="ion-col text-center">
+						<p>No activities available</p>
+					</div>
+					</div>
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+</ion-content>

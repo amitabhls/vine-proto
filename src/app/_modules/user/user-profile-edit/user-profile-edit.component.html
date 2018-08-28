@@ -1,0 +1,60 @@
+<ion-header class="header-vine">
+  <ion-toolbar>
+    <ion-menu-button></ion-menu-button>
+    <ion-title>My Profile</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="content-bg">
+
+  <ion-grid no-padding>
+    <ion-row>
+      <ion-col no-padding>
+        <!-- the below div will contain the profile pic of the user -->
+        <div class="profile-pic-wrap">
+            <img *ngIf="photoURL" [src]="photoURL" alt="User Profile Image" />
+            <img *ngIf="!photoURL" src="../../../../assets/img/profile-img.png" alt="User Profile Image" />
+          <div class="img-overlay">
+          </div>
+        </div>  <!-- profile-pic-wrap -->
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="10" offset="1" size-sm="8" offset-sm="2">
+        <!-- my-profile form -->
+        <ion-list class="my-profile-form-wrap">
+          <ion-item>
+            <ion-label position="floating">Name</ion-label>
+            <ion-input type="text" [value]="name" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Email</ion-label>
+            <ion-input type="email" [value]="email" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Phone</ion-label>
+            <ion-input type="number" [value]="phoneNumber" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Location</ion-label>
+            <ion-select [interfaceOptions]="customPopoverOptions" [value]="location" interface="popover" disabled>
+              <ion-select-option value="California">California</ion-select-option>
+              <ion-select-option value="New York" selected>New York</ion-select-option>
+              <ion-select-option value="Washington">Washington</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Address</ion-label>
+            <ion-textarea type="text" [value]="homeAddress" disabled></ion-textarea>
+          </ion-item>
+        </ion-list> 
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>
+
+<ion-footer>
+  <ion-button (click)="goToEditProfile();" expand="full" class="footer-btn">Edit Profile</ion-button>
+</ion-footer>

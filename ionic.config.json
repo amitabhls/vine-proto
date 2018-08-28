@@ -1,0 +1,7 @@
+{
+  "name": "ionic-4-vine",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

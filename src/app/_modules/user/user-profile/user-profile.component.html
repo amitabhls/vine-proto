@@ -1,0 +1,62 @@
+<ion-header class="header-vine">
+	<ion-toolbar>
+		<ion-menu-button></ion-menu-button>
+		<ion-title>My Profile</ion-title>
+	</ion-toolbar>
+</ion-header>
+
+<ion-content class="content-bg">
+
+	<ion-grid no-padding>
+		<ion-row>
+			<ion-col no-padding>
+				<!-- the below div will contain the profile pic of the user -->
+				<div class="profile-pic-wrap">
+					<img [src]="photoURL" *ngIf=photoURL alt="Profile Image" />
+					<div class="img-overlay" *ngIf=!photoURL>
+						<span class="fa fa-upload fa-2x" margin-top></span>
+						<p class="upload-profile-pic-txt ">Upload Profile Pic</p>
+					</div>
+				</div>  <!-- profile-pic-wrap -->
+			</ion-col>
+		</ion-row>
+
+		<ion-row>
+			<ion-col size="10" offset="1" size-sm="8" offset-sm="2">
+				<!-- my-profile form -->
+				<ion-list class="my-profile-form-wrap">
+					<ion-item>
+						<ion-label position="floating">Name</ion-label>
+						<ion-input [(ngModel)]="name"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label position="floating">Email</ion-label>
+						<ion-input [(ngModel)]="email"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label position="floating">Phone</ion-label>
+						<ion-input type="number" [(ngModel)]="phoneNumber"></ion-input>
+					</ion-item>
+					<ion-item>
+						<ion-label position="floating">Location</ion-label>
+						<ion-select [interfaceOptions]="customPopoverOptions" [(ngModel)]="location" interface="popover">
+								<ion-select-option value="California">California</ion-select-option>
+								<ion-select-option value="New York">New York</ion-select-option>
+								<ion-select-option value="Washington">Washington</ion-select-option>
+						</ion-select>
+					</ion-item>
+					<ion-item>
+						<ion-label  position="floating">Address</ion-label>
+						<ion-textarea [(ngModel)]="homeAddress" rows="5"></ion-textarea>
+					</ion-item>
+				</ion-list> 
+			</ion-col>
+		</ion-row>
+	</ion-grid>
+
+</ion-content>
+
+<ion-footer>
+	<ion-button (click)="updateDetails();" expand="full" class="footer-btn">Update Profile</ion-button>
+</ion-footer>
+	
