@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Platform, LoadingController } from '@ionic/angular';
+import { Platform, LoadingController, AlertController, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { IonicStorageService } from './_core/_services/_ionicStorage/ionic-storage.service';
@@ -14,24 +14,20 @@ import { GetstreamService } from './_core/_services/_getstream/getstream.service
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit { // , OnDestroy {
+export class AppComponent implements OnInit {
   public appPages = [
     {
       title: 'Feed',
       url: '/user/feed',
-      icon: 'home'
+      icon: 'paper'
     },
     {
       title: 'My Profile',
       url: '/user/profile',
-      icon: 'list'
-    },
-    {
-      title: 'Edit Profile',
-      url: '/user/edit-profile',
-      icon: 'list'
+      icon: 'person'
     }
   ];
+
 
   public user: any;
   private userAuthState: any;
@@ -47,7 +43,9 @@ export class AppComponent implements OnInit { // , OnDestroy {
     private loadingController: LoadingController,
     private router: Router,
     private authentication: AuthenticationService,
-    private getStream: GetstreamService
+    private getStream: GetstreamService,
+    private alertController: AlertController,
+    private menuController: MenuController
   ) {
   }
 
@@ -57,9 +55,6 @@ export class AppComponent implements OnInit { // , OnDestroy {
     this.followOnGetstream();
   }
 
-  // ngOnDestroy() {
-  //   this.userAuthState.unsubscribe();
-  // }
 
   initializeApp() {
     this.platform.ready().then(() => {
@@ -84,34 +79,38 @@ export class AppComponent implements OnInit { // , OnDestroy {
       console.log('user-->>', user);
       this.user = user;
       if (user) {
-          this.angularFirestore.collection('users/').doc<any>(user.uid).valueChanges().subscribe(response => {
-              console.log('response-->', response);
-              if (response) {
-                this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(response));
-                console.log('response app comp');
-                if (response.isEdited) {
-                  console.log('redirected from app comp');
-                  this.router.navigateByUrl('user/feed');
-                } else {
-                  this.setStorageAndRedirect();
-                  this.followOnGetstream();
-                }
-              } else {
-                this.angularFirestore.collection(`users/`).doc<any>(this.user.uid).set(
-                  {
-                    name: user.displayName,
-                    email: user.email,
-                    number: user.phoneNumber,
-                    photoURL: user.photoURL,
-                    isEdited: false,
-                    uid: user.uid
-                  }
-                );
-                this.setStorageAndRedirect();
+        this.ionicStorage.setToken(this.user.qa);
+        this.ionicStorage.setUserID(this.user.uid);
+        this.angularFirestore.collection('users/').doc<any>(user.uid).valueChanges().subscribe(response => {
+          console.log('response-->', response);
+          if (response) {
+            this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(response));
+            console.log('response app comp');
+            if (response.isEdited) {
+              console.log('redirected from app comp');
+              this.router.navigateByUrl('user/feed');
+            } else {
+              this.router.navigateByUrl('user/complete-registration');
+              this.followOnGetstream();
+              this.userAuthState.unsubscribe();
+            }
+          } else {
+            this.angularFirestore.collection(`users/`).doc<any>(this.user.uid).set(
+              {
+                name: user.displayName,
+                email: user.email,
+                number: user.phoneNumber,
+                photoURL: user.photoURL,
+                isEdited: false,
+                uid: user.uid
               }
-          });
+            );
+            this.router.navigateByUrl('user/complete-registration');
+            this.userAuthState.unsubscribe();
+          }
+        });
       } else {
-          this.router.navigateByUrl('auth');
+        this.router.navigateByUrl('auth');
       }
     });
   }
@@ -125,15 +124,15 @@ export class AppComponent implements OnInit { // , OnDestroy {
   followOnGetstream() {
     this.angularFirestore.collection('users/').valueChanges().subscribe(response => {
       this.allUsers = response;
-     });
-     if (this.allUsers) {
+    });
+    if (this.allUsers) {
       this.allUsers.forEach(element => {
         if (this.user.uid !== element.uid) {
-           this.getStream.followUser(this.user.uid, element.uid);
-           this.getStream.followUser(element.uid, this.user.uid);
+          this.getStream.followUser(this.user.uid, element.uid);
+          this.getStream.followUser(element.uid, this.user.uid);
         }
       });
-     }
+    }
   }
 
   async presentLoading() {
@@ -144,6 +143,31 @@ export class AppComponent implements OnInit { // , OnDestroy {
       cssClass: 'custom-class custom-loading'
     });
     return await loading.present();
+  }
+
+  async presentAlertConfirm() {
+    this.menuController.close();
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      message: 'Do you want to sign out?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Okay',
+          handler: () => {
+            this.signOut();
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   signOut() {

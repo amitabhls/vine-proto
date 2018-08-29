@@ -1,13 +1,14 @@
 <ion-app>
   <ion-split-pane>
     <ion-menu>
-      <ion-header>
+      <ion-header class="vine-app-sidemenu-header">
         <ion-toolbar>
           <ion-title>Menu</ion-title>
+          <ion-button menuClose="left" class="sign-out-btn" (click)="presentAlertConfirm() ;"><i class="fa fa-power-off"></i></ion-button>
         </ion-toolbar>
       </ion-header>
       <ion-content>
-        <ion-list>
+        <ion-list  class="vine-app-sidemenu">
           <ion-menu-toggle auto-hide="false" *ngFor="let p of appPages">
             <ion-item class="side-menu-item" [routerDirection]="'root'" [routerLink]="[p.url]">
               <ion-icon slot="start" [name]="p.icon"></ion-icon>
@@ -18,11 +19,6 @@
           </ion-menu-toggle>
         </ion-list>
       </ion-content>
-      <ion-footer>
-        <ion-list text-center>
-          <ion-button class="sign-out-btn" (click)="signOut();">Sign Out</ion-button>
-        </ion-list>
-      </ion-footer>
     </ion-menu>
     <ion-router-outlet main></ion-router-outlet>
   </ion-split-pane>

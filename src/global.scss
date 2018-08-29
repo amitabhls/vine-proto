@@ -1,4 +1,5 @@
 // http://ionicframework.com/docs/theming/
+// http://ionicframework.com/docs/theming/
 @import "~@ionic/angular/css/normalize.css";
 @import "~@ionic/angular/css/structure.css";
 @import "~@ionic/angular/css/typography.css";
@@ -18,10 +19,7 @@ body * {
 	--ion-font-family: Roboto;
 }
 
-// for sidemenu (it opens @768px by default)
-.split-pane.split-pane-visible>.split-pane-side {
-  min-width: 0; border-right: 0; max-width: 0;
-}
+
 
 // header css
 .header-md::after {
@@ -38,17 +36,58 @@ body * {
   ion-title {
 		text-align: center; font-size: 17px;
 		color: #f3f3f3; font-weight: 500;
-		letter-spacing: 0.5px; padding: 0 50px;
+		letter-spacing: 0.5px; padding: 0 52px;
 	}
 
 	ion-toolbar {
 		height: 52px; --border-width: 0 !important;
 	}
 
-	ion-menu-button {
-		position: absolute; top: 12px; 
-		left:6px; color: #dfe7e9;
-		z-index: 99; 
+	ion-menu-button, ion-back-button {
+		position: absolute; top: 12.5px; 
+		left:10px; color: #dfe7e9;
+		z-index: 999; font-size: 18px;
+		--ripple-color: transparent;
+	}
+
+	ion-back-button {
+		top: 14px; left: 6px;
+		span.fa {
+			font-size: 26px;
+		}
+
+		.back-button-native.sc-ion-back-button-md,
+		.back-button-native.sc-ion-back-button-ios {
+			margin: -27px 0 0 0;
+			padding: 0;
+			min-width: 28px;
+			height: 30px;
+		}
+
+		.button-text {
+			display: none;
+		}
+	}
+
+	.show-back-button.sc-ion-back-button-ios-h {
+		left: 10px;
+	}
+	ion-icon.sc-ion-back-button-md {
+		padding-right: 0; margin: 0;
+	}
+
+	ion-icon.sc-ion-back-button-ios {
+		display: none;
+	}
+
+	.show-back-button.sc-ion-back-button-md-h {
+    left: 10px;
+	}
+} // header-vine
+
+.header-vine.header-ios { 
+  ion-menu-button {
+		left: 12px;
 	}
 }
 
@@ -62,7 +101,7 @@ body * {
 	}
 }
 
-//  palceholder, select, textarea css 
+//  placeholder, select, textarea css 
 .item {
   --padding-start: 0; --inner-padding-end: 0;
 	--background-active: transparent;
@@ -144,7 +183,7 @@ ion-textarea {
 	border-radius: 5px; background-color: #62717a;
 	color: #fff; font-size: 16px; 
 	font-weight: 500; letter-spacing: 2.5px;
-	line-height: 57px; margin: 7vh auto 0;
+	line-height: 55px; margin: 7vh auto 0;
 	text-transform: uppercase; display: block;
 	box-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.12), 0 2px 2px 0 rgba(0, 0, 0, 0.24), 0 0 5px 0 rgba(0, 0, 0, 0.12), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 	--background: transparent; --transition: none;
@@ -153,6 +192,7 @@ ion-textarea {
 	--height: unset; --box-shadow: none;
 	--border-radius: 0; --ripple-color: transparent;
 	--transition: transparent;
+	cursor: pointer;
 }
 
 .grey-btn:hover:not(.disable-hover) {
@@ -162,12 +202,13 @@ ion-textarea {
 .footer-btn, .footer-btn:hover, .footer-btn:active, .footer-btn:focus {
 	--margin-top: 0; --margin-bottom: 0; 
 	margin: 0; width: 100%; border-radius: 0;
-	--background: #62717a; letter-spacing: 2.5px;
+	--background: #62717a;
 	height: 50px; --height: 50px;
 	font-size: 17px; 
 	font-weight: 500; letter-spacing: 1px;
 	text-transform: initial;
 	box-shadow: none;
+	position: fixed; left:0; bottom: 0;
 }
 
 // general 
@@ -229,30 +270,116 @@ ion-popover ion-backdrop {
 
 // user profile image in header 
 .user-profile-pic--header {
-	 position: absolute;
-	 top: 9px; right: 12px;
-	 height: 36px; width: 36px;
-	 overflow: hidden; border-radius: 50%;
+	position: absolute;
+	top: 11px; right: 13px;
+	height: 32px; width: 32px;
+	overflow: hidden; border-radius: 50%;
+	background: #dfe7e9;
 
-	 img {
-		height: 36px; width: 36px;
-		object-fit: cover;
-	 }
+	img {
+	height: 32px; width: 32px;
+	object-fit: cover;
+	}
+}
+
+//side menu css 
+
+.vine-app-sidemenu {
+	margin-top: 10px; 
+
+	.item {
+		--border-width: 0 !important;
+		outline: 0; margin-bottom: 0;
+		padding: 0 15px;
+
+		ion-icon {
+			font-size: 22px; margin-right: 10px;
+			margin-top: 2px;
+		}
+	}
+}
+
+ion-footer {
+	background: #e8eef2; 
+}
+
+.footer-md::before {
+	background-image: none;
 }
 
 .sign-out-btn {
-	 
-		color: #7b1fa2;
-		--background: transparent;
-		--box-shadow: none;
-		letter-spacing: .7px;
-		text-transform: capitalize;
-		font-size: 16px;
-		--height: 20px;
-		--margin-top: 16px;
-	
+	position: absolute;
+    top: 15px;
+    right: 13px;
+	color: #62717a;
+	--background: transparent;
+	--box-shadow: none;
+	letter-spacing: .7px;
+	text-transform: capitalize;
+	font-size: 16px;
+	--height: 20px;
+	// margin-bottom: 12px;
+	--ion-color-contrast: #62717a;
+	--ripple-color: transparent;
 }
 
-.side-menu-item {
-	margin: 0px 20px;
+.vine-app-sidemenu-header, .vine-app-sidemenu-header ion-toolbar:first-child {
+	height: 52px; text-align: left;
+	
+	ion-title {
+		padding: 0 15px;
+		text-align: left;
+	}
+}
+
+.split-pane-md.split-pane-visible>.split-pane-side,
+.split-pane-ios.split-pane-visible>.split-pane-side {
+	min-width: 235px;
+	max-width: 235px;
+}
+
+.button-solid.sc-ion-button-md-h, .button-solid.sc-ion-button-md-h:hover,
+.button-solid.sc-ion-button-md-h:focus, .button-solid.sc-ion-button-md-h:active {
+	--ion-color-base: transparent;
+	--box-shadow: none;
+}
+
+@media (min-width: 600px) {
+	.footer-btn, .footer-btn:hover, .footer-btn:active, .footer-btn:focus {
+		width: 360px; margin-left: auto; margin-right: auto;
+		position: relative; bottom: unset; left: unset;
+		margin-bottom: 50px;
+	}
+}
+
+@media (min-width: 768px) {
+	.footer-btn, .footer-btn:hover, .footer-btn:active, .footer-btn:focus {
+		width: 345px;
+	}
+}
+
+@media (min-width: 992px) {
+	.footer-btn, .footer-btn:hover, .footer-btn:active, .footer-btn:focus {
+		width: 365px;
+	}
+}
+
+@media (min-width:1200px) {
+	.footer-btn, .footer-btn:hover, .footer-btn:active, .footer-btn:focus {
+		width: 390px;
+	}
+}
+
+.menu-item {
+  padding-left: 10px;
+}
+
+ion-toolbar {
+  position: relative;
+}
+
+.logout {
+  position: absolute;
+  top: 20px;
+  right: 20px;
 }

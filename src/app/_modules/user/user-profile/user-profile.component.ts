@@ -44,16 +44,17 @@ export class UserProfileComponent implements OnInit {
   }
 
   updateDetails(): void {
-    this.angularFirestore.collection(`users/`).doc(this.userID).set(
-      {
-        name: this.name,
-        email: this.email,
-        phoneNumber: this.phoneNumber,
-        photoURL: this.photoURL,
-        location: this.location,
-        homeAddress: this.homeAddress,
-        isEdited: true,
-        uid: this.uid
-      });
+    let updatedData: object = {
+      name: this.name,
+      email: this.email,
+      phoneNumber: this.phoneNumber,
+      photoURL: this.photoURL,
+      location: this.location,
+      homeAddress: this.homeAddress,
+      isEdited: true,
+      uid: this.uid
+    };
+    this.angularFirestore.collection(`users/`).doc(this.userID).set(updatedData);
+    this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(updatedData));
   }
 }

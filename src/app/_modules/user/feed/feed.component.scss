@@ -19,9 +19,9 @@
 	.post-feed-btn {
 		position: absolute;
     right: 0;
-		top: -1px; --background: transparent;
+		top: 0px; --background: transparent;
 		height: 47.5px;
-    --height: unset;
+    --height: 47.5px;
     --padding-start: 9px;
     --padding-end: 9px;
     --margin-top: 0;
@@ -35,17 +35,18 @@
 		--border-radius: 0;
 		line-height: 51.5px;
     background: #dfe7e9;
-    --ripple-color: transparent;
+		--ripple-color: transparent;
+		text-transform: uppercase;
 
 		span {
-			margin-left: 8px;
+			margin-left: 6px; margin-top: 2px;
 		}
 	} // post-feed-btn
 } // post-feed-wrap
 
 .feed-list-wrap {
 	width: calc(100% - 10px);
-	margin: 5px auto 0;
+	margin: 5px auto 20px;
 	background: transparent;
 
 	.feed-list {
@@ -61,12 +62,12 @@
 	
 			ion-avatar {
 				margin: 10px 10px 9px 0;
-				width: 42px; height: 42px;
-				overflow: hidden;
+				width: 40px; height: 40px;
+				overflow: hidden; background: #ddd;
 		
 				img {
-					object-fit: cover; width: 42px;
-					height: 42px;
+					object-fit: cover; width: 40px;
+					height: 40px;
 				}
 			}
 		
@@ -94,17 +95,23 @@
 				--transition: none; --ripple-color: transparent;
 
 				span {
-					font-size: 15px;
+					font-size: 14px;
 					margin-left: 4px;
 				}
 			}
 		}  // item
 	
 		.post-snippet {
-      margin: 0; padding: 7px 12px 5px;
+      margin: 0; padding: 7px 12px 6px;
 			font-size: 14px; letter-spacing: 0.5px;
 			background: #f5f5f5; line-height: 1.3;
 			color: #333;
 		}
 	}  // feed-list
 }  // feed-list-wrap
+
+@media (min-width: 768px) { 
+	.post-feed-wrap {
+		margin: 10px auto 0;
+	}
+}

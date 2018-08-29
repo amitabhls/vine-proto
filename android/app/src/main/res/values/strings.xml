@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Vine</string>
-    <string name="title_activity_main">Vine</string>
-    <string name="package_name">com.logicsquare.vine</string>
-    <string name="fileprovider_authority">com.logicsquare.vine.fileprovider</string>
-    <string name="custom_url_scheme">com.logicsquare.vine</string>
-</resources>

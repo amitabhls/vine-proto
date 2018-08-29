@@ -1,12 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore } from 'angularfire2/firestore';
 import { AuthenticationService } from '../../../_core/_services/_authentication/authentication.service';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
-import { Upload } from '../../../_shared/_models/Model';
 import * as firebase from 'firebase';
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireStorage } from 'angularfire2/storage';
+import { Observable } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'app-complete-registration',
@@ -14,26 +16,27 @@ import { AngularFireStorage } from 'angularfire2/storage';
   styleUrls: ['./complete-registration.component.scss']
 })
 export class CompleteRegistrationComponent implements OnInit {
-public user: any;
-public name: string;
-public phone: string;
-public photoURL: string;
-public email: string;
-public providerID: string;
-public location: string;
-public homeAddress: string;
-public userID: string;
-private basePath: string;
-private uploadTask: firebase.storage.UploadTask;
-private ref: any;
-private task: any;
-private uploadProgress: any;
-private downloadURL: string;
-private uid: string;
-selectedFiles: FileList;
-currentUpload: Upload;
+  public completeRegistrationForm: FormGroup;
+  public user: any;
+  public name: string;
+  public phone: string;
+  public oldPhotoURL: any;
+  public photoURL: any;
+  public email: string;
+  public providerID: string;
+  public location: string;
+  public homeAddress: string;
+  public userID: string;
+  public selectedFiles: FileList;
+  public file: File;
+  public imgsrc;
+  public progressBarValue;
+  public photoDownloadURL: Observable<string>;
+
+  private uid: string;
 
   constructor(
+    private formBuilder: FormBuilder,
     private authentication: AuthenticationService,
     private ionicStorage: IonicStorageService,
     private angularFirestore: AngularFirestore,
@@ -41,15 +44,26 @@ currentUpload: Upload;
     private router: Router,
     private angularFireStorage: AngularFireStorage
   ) {
-      this.basePath  = '/ProfilePhotos-Vine';
-    }
+  }
 
   ngOnInit() {
+    this.initForm();
+  }
+
+  initForm(): void {
+    this.completeRegistrationForm = this.formBuilder.group({
+      userName: new FormControl (this.name, [Validators.required]),
+      userEmail: new FormControl ('' || this.email, [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]),
+      userPhone: new FormControl ('' || this.phone),
+      userLocation: new FormControl ('', [Validators.required]),
+      userHomeAddress: new FormControl ('')
+    });
+    console.log('init form');
     this.getData();
   }
 
-  signOut() {
-      this.authentication.signOut();
+  signOut(): void {
+    this.authentication.signOut();
   }
 
   getData(): void {
@@ -69,29 +83,34 @@ currentUpload: Upload;
             }
             this.user = response;
             this.phone = response.phoneNumber;
-            this.photoURL = response.photoURL;
+            this.oldPhotoURL = response.photoURL;
             this.email = response.email;
             this.uid = response.uid;
-            }
           }
+        }
       });
     }
+    console.log('get data');
   }
 
   updateDetails(): void {
-    this.angularFirestore.collection(`users/`).doc(this.userID).set(
-      {
-        name: this.name,
-        email: this.email,
-        phoneNumber: this.phone,
-        photoURL: this.photoURL,
-        location: this.location,
-        homeAddress: this.homeAddress,
-        isEdited: true,
-        uid: this.uid
-
-      }
-    );
+    if (this.photoDownloadURL) {
+      this.photoURL = this.photoDownloadURL;
+    } else {
+      this.photoURL = this.oldPhotoURL;
+    }
+    const updatedData: object = {
+      name: this.completeRegistrationForm.controls.userName.value,
+      email: this.completeRegistrationForm.controls.userEmail.value,
+      phoneNumber: this.completeRegistrationForm.controls.userPhone.value,
+      photoURL: this.photoURL,
+      location: this.completeRegistrationForm.controls.userLocation.value,
+      homeAddress: this.completeRegistrationForm.controls.userHomeAddress.value,
+      isEdited: true,
+      uid: this.uid
+    };
+    this.angularFirestore.collection(`users/`).doc(this.userID).set(updatedData);
+    this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(updatedData));
     console.log('updated');
     console.log('redirected from complete registration 2');
     this.router.navigateByUrl('user/feed');
@@ -107,41 +126,26 @@ currentUpload: Upload;
     });
     return await loading.present();
   }
-/*
-  uploadImage(upload: Upload) {
-    // const randomId = Math.random().toString(36).substring(2);
-    // this.ref = this.angularFireStorage.ref(randomId);
-    // this.task = this.ref.put(event.target.files[0]);
-    // this.uploadProgress = this.task.percentageChanges();
-    // console.log('progress', this.uploadProgress);
-    // this.downloadURL = this.task.downloadURL();
-    // console.log(this.downloadURL);
 
-    let storageRef = firebase.storage().ref();
-    let uploadTask = storageRef.child(`${this.basePath}/${this.userID}`).put(upload.file);
-
-    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-      (snapshot) =>  {
-        // upload in progress
-        upload.progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log(upload.progress);
-      },
-      (error) => {
-        // upload failed
-        console.log(error);
-      },
-      () => {
-        // upload success
-        upload.url = uploadTask.snapshot.downloadURL;
-        upload.name = upload.file.name;
-
+  chooseFiles(event) {
+    this.selectedFiles = event.target.files;
+    if (this.selectedFiles.item(0)) {
+      this.uploadpic();
+    }
   }
-);
-}
-uploadSingle() {
-  let file = this.selectedFiles.item(0);
-  this.currentUpload = new Upload(file);
-  this.uploadImage(this.currentUpload);
-}
-*/
+
+  uploadpic() {
+    const file = this.selectedFiles.item(0);
+    const uploadTask = this.angularFireStorage.upload('/userProfilePhotos/' + this.userID, file);
+    const storageRef = this.angularFireStorage.ref('/userProfilePhotos/' + this.userID);
+
+    uploadTask.snapshotChanges().pipe(
+      finalize(() => {
+        storageRef.getDownloadURL().subscribe(url => {
+          this.photoDownloadURL = url;
+          console.log(this.photoDownloadURL);
+        });
+      })
+    ).subscribe();
+  }
 }

@@ -12,10 +12,10 @@
       <ion-col no-padding>
         <!-- the below div will contain the profile pic of the user -->
         <div class="profile-pic-wrap">
-          <!-- <img src="" alt="Profile Image" /> -->
-          <div class="img-overlay">
+          <img *ngIf="photoDownloadURL" [src]="photoDownloadURL" alt="Profile Image" />
+          <div *ngIf="!photoDownloadURL" class="img-overlay">
             <span class="fa fa-upload fa-2x" margin-top></span>
-            <input class="file-input" type="file" (change)="uploadImage($event)" accept=".png,.jpg" />
+            <input class="file-input" type="file" (change)="chooseFiles($event)" accept=".png,.jpg" />
             <p text-center>Upload a Image</p>
           </div>
         </div>  <!-- profile-pic-wrap -->
@@ -23,24 +23,28 @@
     </ion-row>
 
     <ion-row>
-      <ion-col size="10" offset="1" size-sm="8" offset-sm="2" size-md="6" offset-md="3">
+      <ion-col size="10" offset="1" size-sm="8" offset-sm="2" size-lg="6" offset-lg="3">
         <!-- registration form -->
+        <form [formGroup]="completeRegistrationForm">
         <ion-list class="registration-form-wrap">
           <ion-item>
             <ion-label position="floating">Name</ion-label>
-            <ion-input [(ngModel)]="name" type="text" ></ion-input>
+            <ion-input formControlName="userName" type="text" [value]="name"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input [(ngModel)]="email" type="text" ></ion-input>
+            <ion-input formControlName="userEmail" type="text" [value]="email"></ion-input>
           </ion-item>
+          <div text-center *ngIf="completeRegistrationForm.controls.userEmail.dirty && completeRegistrationForm.controls.userEmail.invalid">
+              Please enter a valid email.
+          </div>
           <ion-item>
             <ion-label position="floating">Phone</ion-label>
-            <ion-input [(ngModel)]="phone" type="tel" ></ion-input>
+            <ion-input formControlName="userPhone" type="tel" [value]="phone"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Location</ion-label>
-            <ion-select [(ngModel)]="location" [interfaceOptions]="customPopoverOptions" interface="popover">
+            <ion-select formControlName="userLocation" [interfaceOptions]="customPopoverOptions" interface="popover"  >
               <ion-select-option value="California">California</ion-select-option>
               <ion-select-option value="New York">New York</ion-select-option>
               <ion-select-option value="Washington">Washington</ion-select-option>
@@ -48,52 +52,14 @@
           </ion-item>
           <ion-item>
             <ion-label position="floating">Address</ion-label>
-            <ion-textarea [(ngModel)]="homeAddress" rows="5"></ion-textarea>
+            <ion-textarea formControlName="userHomeAddress" rows="4" ></ion-textarea>
           </ion-item>
         </ion-list> 
+      </form>
+
       </ion-col>
     </ion-row>
   </ion-grid>
-
+  <ion-button (click)="updateDetails()" expand="full" class="footer-btn">Complete Registration</ion-button>
 </ion-content>
 
-<ion-footer>
-  <ion-button (click)="updateDetails()" expand="full" class="footer-btn">Complete Registration</ion-button>
-</ion-footer>
-
-<!-- 
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Complete Registration</ion-title>
-  </ion-toolbar>
-</ion-header>
-<ion-content padding>
-  <ion-item>
-    <ion-button (click)="signOut()">Sign Out</ion-button>
-  </ion-item>
-  <ion-item>
-    <ion-label>Name</ion-label>
-    <ion-input [(ngModel)]="name" type="text" placeholder="Name"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Email</ion-label>
-    <ion-input [(ngModel)]="email" type="text" placeholder="Email"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Phone</ion-label>
-    <ion-input [(ngModel)]="phone" type="text" placeholder="Phone"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Location</ion-label>
-    <ion-input [(ngModel)]="location" type="text" placeholder="Location"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-label>Home Address</ion-label>
-    <ion-textarea [(ngModel)]="homeAddress" placeholder="Enter a description"></ion-textarea>
-  </ion-item>
-  <ion-item>
-    <ion-button (click)="updateDetails()">
-        Update Details
-    </ion-button>
-  </ion-item>
-</ion-content> -->

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { IonicModule } from '@ionic/angular';
-import { FormsModule } from '@angular/forms';
+import { FormsModule , ReactiveFormsModule } from '@angular/forms';
 
 import { environment } from '../../../environments/environment';
 
@@ -23,6 +23,7 @@ import { GetstreamService } from '../../_core/_services/_getstream/getstream.ser
     IonicModule.forRoot(),
     FormsModule,
     AngularFireStorageModule,
+    ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase, 'ionic-4-vine'),
   ],
   declarations: [

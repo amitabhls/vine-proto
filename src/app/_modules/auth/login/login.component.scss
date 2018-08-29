@@ -4,46 +4,47 @@
 
 .welcome-to-vine-txt {
 	text-align: center;
-	margin: 7vh auto 5vh;
+	margin: 6vh auto 5vh;
 	color: #222; 
 }
 
 .cover-image-login {
 	width: 100%; overflow: hidden;
-	position: relative;
+	position: relative; height: 40vh;
 	
-	&:before {
-		content: ""; display: block;
-		padding-top: 56.25%;
-	}
-
 	img {
 		display: block; width: 100%;
-		height: auto; position: absolute;
-		top: 0; left: 0;
+		height: 100%; position: absolute;
+		top: 0; left: 0; object-fit:cover;
 	}
 }  // cover-image-login
 
-.login-btn {
-	margin-top: 17vh;
+.login-btn, .login-btn:hover, .login-btn:focus, .login-btn:active {
+	margin-top: 22vh;
 }
 
 // media styles
 @media (min-height: 700px) {
-  .welcome-to-vine-txt {
-		margin: 8vh auto 5vh;
+	.welcome-to-vine-txt {
+		margin: 6.5vh auto 5vh; 
+	}
+	.cover-image-login {
+		height: 42vh;
+	}  // cover-image-login
+	.login-btn, .login-btn:hover, .login-btn:focus, .login-btn:active {
+		margin-top: 24vh;
 	}
 } 
-@media (min-height: 800px) {
-  .welcome-to-vine-txt {
-		margin: 9vh auto 5vh;
-	}
-	.login-btn {
-		margin-top: 18vh;
-	}
-}
-@media (min-height: 1000px) {
-	.login-btn {
-		margin-top: 17vh;
-	}
-}
+// @media (min-height: 900px) {
+// 	.grey-btn, .grey-btn:hover, .grey-btn:focus, .grey-btn:active {
+// 		margin: 6vh auto 0;
+// 	}
+// }
+// @media (min-height: 1200px) {
+// 	.grey-btn, .grey-btn:hover, .grey-btn:focus, .grey-btn:active {
+// 		margin: 5.5vh auto 0;
+// 	}
+// 	.login-btn, .login-btn:hover, .login-btn:focus, .login-btn:active {
+// 		margin-top: 23.5vh;
+// 	}
+// }

@@ -1,31 +1,24 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <ion-title>Feeds</ion-title>
-  </ion-toolbar>
-</ion-header>
-<ion-content padding>
-  <ion-item>
-    <ion-button (click)="signOut()">Sign Out</ion-button>
-  </ion-item>
-</ion-content>
- -->
-
 <ion-header class="header-vine">
 	<ion-toolbar>
-		<ion-menu-button></ion-menu-button>
+		<ion-menu-button> 
+			<span class="fa fa-bars"></span>
+		</ion-menu-button>
 		<ion-title>Vine</ion-title>
 		<div class="user-profile-pic--header">
-			<img [src]="userData.photoURL" alt="User Profile Image" [routerLink]="[ '../my-profile']"/>
+			<img [src]="userData.photoURL" alt="User Profile Image" [routerLink]="[ '/user/profile']"/>
     </div>
 	</ion-toolbar>
 </ion-header>
 
 <ion-content class="content-bg">
-
+	<ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles">
+		</ion-refresher-content>
+  </ion-refresher>
 	<ion-grid no-padding>
 		<ion-row>
-			<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
-				<div class="post-feed-wrap">
+				<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-lg="8" offset-lg="2" size-xl="6" offset-xl="3">
+					<div class="post-feed-wrap">
 					<ion-input placeholder="Post Something.." [(ngModel)]="newMessage" ></ion-input>
 
 					<ion-button class="post-feed-btn" (click)="addActivity()">
@@ -36,10 +29,10 @@
 		</ion-row>
 
 		<ion-row>
-			<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-md="8" offset-md="2">
+			<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-lg="8" offset-lg="2" size-xl="6" offset-xl="3">
 
        <!--  feeds list -->
-				<ion-list class="feed-list-wrap" *ngIf="activities.length && !loadingActivity">
+				<ion-list class="feed-list-wrap" *ngIf="activities.length && !loading">
 					<div class="feed-list" *ngFor="let activity of activities">
 					<ion-item>
 						<ion-avatar slot="start">
@@ -57,15 +50,18 @@
 					<p class="post-snippet">{{activity.object}}</p>
 					</div>
 				</ion-list>
-				<div class="row" *ngIf="!activities.length && !loadingActivity">
+				<div class="row" *ngIf="!activities.length && !loading" text-center>
 					<div class="ion-col text-center">
 					<p>No activities available</p>
 					</div>
 				</div>
 				<!-- <ion-spinner name="dots"></ion-spinner> -->
-				<div class="text-center" *ngIf="!activities.length && loadingActivity">
-					<ion-spinner name="dots"></ion-spinner>
-					<div>Loading Feeds..</div>
+				<div class="text-center" *ngIf="!activities.length && loading"  text-center>
+					<div *ngIf="!activities.length && loadingActivity" text-center>
+						<ion-spinner name="dots"></ion-spinner>
+						<div>Loading Feeds..</div>
+					</div>
+	
 				</div>
 			
 			</ion-col>

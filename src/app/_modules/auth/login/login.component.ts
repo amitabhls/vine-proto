@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../../_core/_services/_authentication/authentication.service';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, MenuController } from '@ionic/angular';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
 
 @Component({
@@ -10,9 +10,12 @@ import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ioni
 })
 export class LoginComponent implements OnInit {
   constructor(
+    private menuController: MenuController,
     private authService: AuthenticationService,
     private loadingController: LoadingController
-  ) { }
+  ) {
+    // this.menuController.swipeEnable(false);
+  }
 
   ngOnInit() {
   }
@@ -26,11 +29,11 @@ export class LoginComponent implements OnInit {
   }
 
   onTwitterLogin() {
-   this.authService.loginInWithTwitter();
+    this.authService.loginInWithTwitter();
   }
 
   onSignOut() {
-   this.authService.signOut();
+    this.authService.signOut();
   }
 
   async presentLoading() {

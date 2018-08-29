@@ -1,19 +1,15 @@
 .profile-pic-wrap {
 	width: 100%; overflow: hidden;
-	position: relative; background: #fefefe;
-	-webkit-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
-	-moz-box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
-	box-shadow: 0px 1px 2px 0px rgba(0,0,0,0.1);
-	
-	&:before {
-		content: ""; display: block;
-		padding-top: 56.25%;
-	}
+	position: relative; background: #f5f5f5;
+	-webkit-box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.1);
+	-moz-box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.1);
+	box-shadow: 0px 1px 4px 0px rgba(0,0,0,0.1);
+  height: 270px;
 
 	img {
 		display: block; width: 100%;
-		height: auto; position: absolute;
-		top: 0; left: 0;
+		height: 100%; position: absolute;
+		top: 0; left: 0; object-fit:contain;
 	}
 
 	.img-overlay {
@@ -34,6 +30,17 @@
 }  // profile-pic-wrap
 
 .my-profile-form-wrap {
-  margin: 15px auto 20px;
+  margin: 15px auto 70px;
 	background: transparent;
 }
+
+@media (min-height: 900px) {
+	.profile-pic-wrap {
+		height: 300px;
+	}  // cover-image-login
+} 
+@media (min-width: 600px) {
+	.my-profile-form-wrap {
+		margin: 15px auto 35px;
+	}
+} 
