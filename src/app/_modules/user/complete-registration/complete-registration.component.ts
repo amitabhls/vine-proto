@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AuthenticationService } from '../../../_core/_services/_authentication/authentication.service';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
@@ -15,25 +15,27 @@ import { finalize } from 'rxjs/operators';
   templateUrl: './complete-registration.component.html',
   styleUrls: ['./complete-registration.component.scss']
 })
-export class CompleteRegistrationComponent implements OnInit {
-  public completeRegistrationForm: FormGroup;
-  public user: any;
-  public name: string;
-  public phone: string;
-  public oldPhotoURL: any;
-  public photoURL: any;
-  public email: string;
-  public providerID: string;
-  public location: string;
-  public homeAddress: string;
-  public userID: string;
-  public selectedFiles: FileList;
-  public file: File;
-  public imgsrc;
-  public progressBarValue;
-  public photoDownloadURL: Observable<string>;
-
-  private uid: string;
+export class CompleteRegistrationComponent implements OnInit, OnDestroy {
+  completeRegistrationForm: FormGroup;
+  user: any;
+  name: string;
+  phone: string;
+  oldPhotoURL: any;
+  photoURL: any;
+  email: string;
+  providerID: string;
+  location: string;
+  homeAddress: string;
+  userID: string;
+  selectedFiles: FileList;
+  file: File;
+  imgsrc;
+  progressBarValue;
+  photoDownloadURL: Observable<string>;
+  uid: string;
+  observeValueChange: any;
+  userPhoneNumber: string;
+  userHomeAddressValue: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -47,7 +49,14 @@ export class CompleteRegistrationComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.presentLoading(1000);
     this.initForm();
+  }
+
+  ngOnDestroy() {
+    if (this.observeValueChange) {
+      this.observeValueChange.unsubscribe();
+    }
   }
 
   initForm(): void {
@@ -69,7 +78,7 @@ export class CompleteRegistrationComponent implements OnInit {
   getData(): void {
     this.userID = this.ionicStorage.getUserID();
     if (this.userID) {
-      this.angularFirestore.collection(`users/`).doc<any>(this.userID).valueChanges().subscribe(response => {
+      this.observeValueChange = this.angularFirestore.collection(`users/`).doc<any>(this.userID).valueChanges().subscribe(response => {
         if (response) {
           if (response.isEdited) {
             console.log('redirected from complete registration');
@@ -99,13 +108,25 @@ export class CompleteRegistrationComponent implements OnInit {
     } else {
       this.photoURL = this.oldPhotoURL;
     }
+    if (!this.completeRegistrationForm.controls.userPhone.value) {
+      this.userPhoneNumber = '';
+    } else {
+      this.userPhoneNumber = this.completeRegistrationForm.controls.userPhone.value;
+    }
+
+    if (!this.completeRegistrationForm.controls.userHomeAddress.value) {
+      this.userHomeAddressValue = '';
+    } else {
+      this.userHomeAddressValue = this.completeRegistrationForm.controls.userHomeAddress.value;
+    }
+
     const updatedData: object = {
       name: this.completeRegistrationForm.controls.userName.value,
       email: this.completeRegistrationForm.controls.userEmail.value,
-      phoneNumber: this.completeRegistrationForm.controls.userPhone.value,
+      phoneNumber: this.userPhoneNumber,
       photoURL: this.photoURL,
       location: this.completeRegistrationForm.controls.userLocation.value,
-      homeAddress: this.completeRegistrationForm.controls.userHomeAddress.value,
+      homeAddress: this.userHomeAddressValue,
       isEdited: true,
       uid: this.uid
     };
@@ -116,10 +137,9 @@ export class CompleteRegistrationComponent implements OnInit {
     this.router.navigateByUrl('user/feed');
   }
 
-  async presentLoading() {
+  async presentLoading(duration: number) {
     const loading = await this.loadingController.create({
-      spinner: 'hide',
-      duration: 2000,
+      duration: duration,
       content: 'Please wait...',
       translucent: true,
       cssClass: 'custom-class custom-loading'
@@ -135,6 +155,7 @@ export class CompleteRegistrationComponent implements OnInit {
   }
 
   uploadpic() {
+    this.presentLoading(3000);
     const file = this.selectedFiles.item(0);
     const uploadTask = this.angularFireStorage.upload('/userProfilePhotos/' + this.userID, file);
     const storageRef = this.angularFireStorage.ref('/userProfilePhotos/' + this.userID);

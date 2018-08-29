@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import * as stream from 'getstream';
-import signing from 'getstream/src/lib/signing';
 import { StreamActivity } from '../../../_shared/_models/Model';
 import KJUR from 'jsrsasign';
 declare let $: any;
@@ -15,9 +14,9 @@ const FEED_ID = 'user-activity';
 @Injectable()
 export class GetstreamService {
   client: stream.Client;
-  private Token: string;
-  private feedId = '*';
-  private userId = '*';
+  Token: string;
+  feedId = '*';
+  userId = '*';
   private readonly jwtHeader = {alg: JWT_SIGNING_ALGORITHM};
   constructor() {
     this.client = stream.connect(APP_TOKEN, null , APP_ID, { location: 'us-east' });
@@ -61,15 +60,14 @@ export class GetstreamService {
     return Promise.resolve(addActivityPromise);
   }
 
-  updateActivity(activity) {
+  updateActivity(activity): void {
     console.log('activity from service', activity);
-    // this.client.getReadWriteToken(this.client.feedSlug, this.client.feed.userId);
     this.client.updateActivities(activity, function(res) {
       console.log('res:', res );
     });
   }
 
-  followUser(whoIsFollowing, whomToFollow) {
+  followUser(whoIsFollowing, whomToFollow): void {
       const currentUserFeed = this.client.feed('Timeline', whoIsFollowing, this.getToken());
       currentUserFeed.follow('Timeline', whomToFollow);
   }

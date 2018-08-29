@@ -1,30 +1,27 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
-import { Platform, LoadingController, AlertController } from '@ionic/angular';
-import { UserData } from '../../../_shared/_models/Model';
+import { Platform } from '@ionic/angular';
 import AuthProvider = firebase.auth.AuthProvider;
 import { IonicStorageService } from '../_ionicStorage/ionic-storage.service';
 import { Observable } from 'rxjs';
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
-// import { Facebook } from '@ionic-native/facebook/ngx';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthenticationService {
-  public token: string;
-  public userData: any;
-  public user: Observable<firebase.User>;
-  public userDetails: any;
-  private isGoogleNativeLogin: boolean;
-  private isFacebookNativeLogin: boolean;
+  token: string;
+  userData: any;
+  user: Observable<firebase.User>;
+  userDetails: any;
+  isGoogleNativeLogin: boolean;
 
   constructor(
     private angularFireAuth: AngularFireAuth,
     private platform: Platform,
     private ionicStorage: IonicStorageService,
-    private loadingController: LoadingController,
     private googlePlus: GooglePlus,
-    private alertController: AlertController
+    private router: Router
   ) { }
   /**
    * @name loginInWithGoogle
@@ -39,20 +36,10 @@ export class AuthenticationService {
     }
   }
 
-  loginInWithFacebook() {
-      return this.webLogin(new firebase.auth.FacebookAuthProvider());
-  }
-
-    loginInWithTwitter() {
-      console.log('Login in with twitter');
-      return this.webLogin(new firebase.auth.TwitterAuthProvider());
-    }
-
   private webLogin(provider: AuthProvider) {
     return this.angularFireAuth.auth.signInWithRedirect(provider)
       .then(() => {
         return this.angularFireAuth.auth.getRedirectResult().then(result => {
-          // this.token = result.credential.accessToken;
           console.log('Login Result', result);
           console.log('token xyz', result.credential);
           this.userData = result.user;
@@ -62,6 +49,21 @@ export class AuthenticationService {
           alert(error.message);
         });
       });
+  }
+
+  nativeGoogleLogin(): Promise<any> {
+    this.ionicStorage.setOnlocalStorage('isGoogleNativeLogin', 'true');
+    return this.googlePlus.login({
+      'webClientId': '234309026687-peq2gaergggm0fajhrcjslh77hodcdtl.apps.googleusercontent.com',
+      'scopes': 'profile email'
+    }).then(response => {
+      return this.angularFireAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(response.idToken))
+        .then(
+          (success: any) => {
+            console.log('Success:', success);
+          })
+        .catch(error => console.log('Firebase failure: ' + JSON.stringify(error)));
+    }).catch(err => console.error('Error: ', err));
   }
 
   signOut(): void {
@@ -74,41 +76,7 @@ export class AuthenticationService {
       this.googlePlus.logout();
       this.ionicStorage.removeFromLocalStorage('isGoogleNativeLogin');
     }
-  }
-
-  nativeGoogleLogin(): Promise<any> {
-    this.ionicStorage.setOnlocalStorage('isGoogleNativeLogin', 'true');
-    return this.googlePlus.login({
-      'webClientId': '234309026687-peq2gaergggm0fajhrcjslh77hodcdtl.apps.googleusercontent.com',
-      'scopes': 'profile email'
-    }).then(response => {
-      return this.angularFireAuth.auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(response.idToken))
-        .then(
-          (success: any) => {
-            // success
-          })
-        .catch(error => console.log('Firebase failure: ' + JSON.stringify(error)));
-    }).catch(err => console.error('Error: ', err));
-  }
-
-  async presentLoading() {
-    const loading = await this.loadingController.create({
-      spinner: 'hide',
-      duration: 3000,
-      content: 'Please wait...',
-      translucent: true,
-      cssClass: 'custom-class custom-loading'
-    });
-    return await loading.present();
-  }
-
-  async presentAlert(msg) {
-    const alert = await this.alertController.create({
-      header: 'Alert',
-      message: msg,
-      buttons: ['OK']
-    });
-    await alert.present();
+    this.router.navigateByUrl('/auth');
   }
 }
 

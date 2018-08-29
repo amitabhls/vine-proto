@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-
 import { Platform, LoadingController, AlertController, MenuController } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -14,8 +13,8 @@ import { GetstreamService } from './_core/_services/_getstream/getstream.service
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit {
-  public appPages = [
+export class AppComponent implements OnInit, OnDestroy{
+  appPages = [
     {
       title: 'Feed',
       url: '/user/feed',
@@ -28,10 +27,11 @@ export class AppComponent implements OnInit {
     }
   ];
 
+  user: any;
+  userAuthState: any;
+  checkNewLogin: any;
+  allUsers: any;
 
-  public user: any;
-  private userAuthState: any;
-  private allUsers: any;
   constructor(
     private platform: Platform,
     private splashScreen: SplashScreen,
@@ -50,9 +50,19 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
+    window.console.log = function() {};
     this.initializeApp();
     this.checkCurrentAuthStatus();
     this.followOnGetstream();
+  }
+
+  ngOnDestroy() {
+    if (this.userAuthState) {
+      this.userAuthState.unsubscribe();
+    }
+    if (this.checkNewLogin) {
+      this.checkNewLogin.unsubscribe();
+    }
   }
 
 
@@ -67,21 +77,17 @@ export class AppComponent implements OnInit {
     let token: string;
     token = this.storage.getToken();
     console.log('token from component', token);
-    // if (token) {
-    //   this.router.navigateByUrl('user');
-    // } else {
-    //   this.router.navigateByUrl('auth');
-    // }
   }
 
   checkCurrentAuthStatus(): void {
+    this.presentLoading();
     this.userAuthState = this.angularFireAuth.authState.subscribe(user => {
       console.log('user-->>', user);
       this.user = user;
       if (user) {
         this.ionicStorage.setToken(this.user.qa);
         this.ionicStorage.setUserID(this.user.uid);
-        this.angularFirestore.collection('users/').doc<any>(user.uid).valueChanges().subscribe(response => {
+        this.checkNewLogin = this.angularFirestore.collection('users/').doc<any>(user.uid).valueChanges().subscribe(response => {
           console.log('response-->', response);
           if (response) {
             this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(response));
@@ -89,10 +95,15 @@ export class AppComponent implements OnInit {
             if (response.isEdited) {
               console.log('redirected from app comp');
               this.router.navigateByUrl('user/feed');
+              if (this.checkNewLogin) {
+                this.checkNewLogin.unsubscribe();
+              }
             } else {
               this.router.navigateByUrl('user/complete-registration');
               this.followOnGetstream();
-              this.userAuthState.unsubscribe();
+              if (this.checkNewLogin) {
+                this.checkNewLogin.unsubscribe();
+              }
             }
           } else {
             this.angularFirestore.collection(`users/`).doc<any>(this.user.uid).set(
@@ -106,7 +117,9 @@ export class AppComponent implements OnInit {
               }
             );
             this.router.navigateByUrl('user/complete-registration');
-            this.userAuthState.unsubscribe();
+            if (this.checkNewLogin) {
+              this.checkNewLogin.unsubscribe();
+            }
           }
         });
       } else {
@@ -114,6 +127,7 @@ export class AppComponent implements OnInit {
       }
     });
   }
+
 
   setStorageAndRedirect(): void {
     this.ionicStorage.setToken(this.user.qa);
@@ -137,7 +151,7 @@ export class AppComponent implements OnInit {
 
   async presentLoading() {
     const loading = await this.loadingController.create({
-      duration: 1000,
+      duration: 3000,
       content: 'Please wait...',
       translucent: true,
       cssClass: 'custom-class custom-loading'
@@ -152,14 +166,14 @@ export class AppComponent implements OnInit {
       message: 'Do you want to sign out?',
       buttons: [
         {
-          text: 'Cancel',
+          text: 'No',
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
             console.log('Confirm Cancel: blah');
           }
         }, {
-          text: 'Okay',
+          text: 'Yes',
           handler: () => {
             this.signOut();
           }

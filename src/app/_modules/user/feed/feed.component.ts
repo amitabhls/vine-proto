@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../_core/_services/_authentication/authentication.service';
 import { AngularFirestore} from 'angularfire2/firestore';
-import { Observable } from 'rxjs';
-import { UserData } from '../../../_shared/_models/Model';
 import { StreamActivity } from '../../../_shared/_models/Model';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
 import { Router } from '@angular/router';
 import { GetstreamService } from '../../../_core/_services/_getstream/getstream.service';
+import { LoadingController } from '@ionic/angular';
 
 @Component({
   selector: 'app-feed',
@@ -14,35 +13,46 @@ import { GetstreamService } from '../../../_core/_services/_getstream/getstream.
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit, OnDestroy {
-public userID: string;
-public userData: any;
-public user: any;
-private newMessage: string;
-public newActivity: StreamActivity;
-public loading: boolean;
-public alreadyLiked: boolean;
-public activities: StreamActivity[] = [];
-private extractDataFromFirestore: any;
+userID: string;
+userData: any;
+user: any;
+newMessage: string;
+newActivity: StreamActivity;
+loading: boolean;
+alreadyLiked: boolean;
+activities: StreamActivity[] = [];
+extractDataFromFirestore: any;
   constructor(
     private authentication: AuthenticationService,
     private angularFirestore: AngularFirestore,
     private ionicStorage: IonicStorageService,
     private router: Router,
-    private getstream: GetstreamService
+    private getstream: GetstreamService,
+    private loadingController: LoadingController
   ) {
       this.alreadyLiked = false;
     }
 
   ngOnInit() {
+    this.presentLoading();
     this.initFeedPage();
-    // this.initNewActivity();
     this.getFeed();
   }
 
   ngOnDestroy() {
-    if ( this.extractDataFromFirestore !== undefined ) {
+    if ( this.extractDataFromFirestore ) {
       this.extractDataFromFirestore.unsubscribe();
     }
+  }
+
+  async presentLoading() {
+    const loading = await this.loadingController.create({
+      duration: 1000,
+      content: 'Please wait...',
+      translucent: true,
+      cssClass: 'custom-class custom-loading'
+    });
+    return await loading.present();
   }
 
   initFeedPage() {
@@ -86,7 +96,7 @@ private extractDataFromFirestore: any;
   }
 
 
-  addActivity() {
+  addActivity(): void {
     console.log('userid', this.newMessage);
     console.log('newActivity', this.newActivity);
     this.newActivity.object = this.newMessage;
@@ -116,7 +126,7 @@ private extractDataFromFirestore: any;
     }, 2000);
   }
 
-  viewOtherProfile(activity) {
+  viewOtherProfile(activity): void {
     console.log('from feed other user', activity.uid);
     if (activity.uid === this.userID) {
       this.router.navigateByUrl('/user/profile');
@@ -125,7 +135,7 @@ private extractDataFromFirestore: any;
     }
   }
 
-  signOut() {
+  signOut(): void {
     this.authentication.signOut();
   }
 

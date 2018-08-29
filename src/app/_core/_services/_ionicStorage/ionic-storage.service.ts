@@ -41,7 +41,7 @@ export class IonicStorageService {
     return localStorage.getItem(key);
   }
 
-  removeFromLocalStorage(key: string) {
+  removeFromLocalStorage(key: string): void {
     localStorage.removeItem(key);
   }
 

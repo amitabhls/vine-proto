@@ -6,7 +6,6 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
 import { IonicModule } from '@ionic/angular';
 import { AuthenticationService } from '../../_core/_services/_authentication/authentication.service';
-import { SignupComponent } from './signup/signup.component';
 import { IonicStorageService } from '../../_core/_services/_ionicStorage/ionic-storage.service';
 
 @NgModule({
@@ -17,8 +16,7 @@ import { IonicStorageService } from '../../_core/_services/_ionicStorage/ionic-s
     FormsModule
   ],
   declarations: [
-    LoginComponent,
-    SignupComponent
+    LoginComponent
   ],
   providers: [
     AuthenticationService,

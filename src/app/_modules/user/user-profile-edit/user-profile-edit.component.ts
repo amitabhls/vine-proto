@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
 import { Router } from '@angular/router';
@@ -8,16 +8,17 @@ import { Router } from '@angular/router';
   templateUrl: './user-profile-edit.component.html',
   styleUrls: ['./user-profile-edit.component.scss']
 })
-export class UserProfileEditComponent implements OnInit {
-  private userID: string;
-  private userData: any;
-  public photoURL: string;
-  public name: string;
-  public email: string;
-  public phoneNumber: string;
-  public location: string;
-  public homeAddress: string;
-  public uid: string;
+export class UserProfileEditComponent implements OnInit, OnDestroy {
+  userID: string;
+  userData: any;
+  photoURL: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  location: string;
+  homeAddress: string;
+  uid: string;
+  observeValueChange: any;
 
   constructor(
     private angularFirestore: AngularFirestore,
@@ -26,7 +27,8 @@ export class UserProfileEditComponent implements OnInit {
   ) {
       this.userID = this.ionicStorage.getUserID();
       if (this.userID) {
-          this.angularFirestore.collection('users/').doc<any>(this.userID).valueChanges().subscribe(response => {
+          this.observeValueChange = this.angularFirestore.collection('users/').doc<any>(this.userID).valueChanges()
+          .subscribe(response => {
           this.userData = response;
           console.log('my profile', this.userData);
           this.photoURL = this.userData.photoURL;
@@ -44,7 +46,13 @@ export class UserProfileEditComponent implements OnInit {
   ngOnInit() {
   }
 
-  goToEditProfile() {
+  ngOnDestroy() {
+      if (this.observeValueChange) {
+        this.observeValueChange.unsubscribe();
+      }
+  }
+
+  goToEditProfile(): void {
       this.router.navigateByUrl('/user/edit-profile');
   }
 

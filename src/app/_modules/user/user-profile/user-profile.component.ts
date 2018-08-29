@@ -1,31 +1,34 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
 })
-export class UserProfileComponent implements OnInit {
+export class UserProfileComponent implements OnInit, OnDestroy {
 
-  private userID: string;
-  private userData: any;
-  public photoURL: string;
-  public name: string;
-  public email: string;
-  public phoneNumber: string;
-  public location: string;
-  public homeAddress: string;
-  public uid: string;
+  userID: string;
+  userData: any;
+  photoURL: string;
+  name: string;
+  email: string;
+  phoneNumber: string;
+  location: string;
+  homeAddress: string;
+  uid: string;
+  observeValueChange: any;
 
   constructor(
     private angularFirestore: AngularFirestore,
-    private ionicStorage: IonicStorageService
+    private ionicStorage: IonicStorageService,
+    private router: Router
   ) {
     this.userID = this.ionicStorage.getUserID();
     if (this.userID) {
-        this.angularFirestore.collection('users/').doc<any>(this.userID).valueChanges().subscribe(response => {
+        this.observeValueChange = this.angularFirestore.collection('users/').doc<any>(this.userID).valueChanges().subscribe(response => {
         this.userData = response;
         console.log('my profile', this.userData);
         this.photoURL = this.userData.photoURL;
@@ -43,6 +46,12 @@ export class UserProfileComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    if (this.observeValueChange) {
+      this.observeValueChange.unsubscribe();
+    }
+  }
+
   updateDetails(): void {
     let updatedData: object = {
       name: this.name,
@@ -56,5 +65,6 @@ export class UserProfileComponent implements OnInit {
     };
     this.angularFirestore.collection(`users/`).doc(this.userID).set(updatedData);
     this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(updatedData));
+    this.router.navigateByUrl('/user/profile');
   }
 }
