@@ -12,6 +12,7 @@ import { LoadingController } from '@ionic/angular';
   styleUrls: ['./other-user-profile.component.scss']
 })
 export class OtherUserProfileComponent implements OnInit, OnDestroy {
+  getAllData: any;
   otherUsersID: string;
   name: string;
   email: string;
@@ -21,7 +22,7 @@ export class OtherUserProfileComponent implements OnInit, OnDestroy {
   photoURL: string;
   loading: boolean;
   userID: string;
-  activities: StreamActivity[] = [];
+  activities: any[] = [];
   selectedFeeds: any[] = [];
   loggedInUserPhotoURL: string;
   loggedInUserName: string;
@@ -80,20 +81,13 @@ export class OtherUserProfileComponent implements OnInit, OnDestroy {
 
   getFeed(): void {
     this.selectedFeeds.length = 0;
-    console.log('other user from getfeed', this.otherUsersID);
-    this.userID = this.ionicStorage.getUserID();
-    console.log('user id--->', this.userID);
-    this.loading = true;
-    this.getstream.getFeed().then(activities => {
-      this.activities = activities;
-      console.log('get ffrrr', activities);
-      this.activities.forEach((element, i) => {
+    this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
+      this.activities = response;
+      this.activities.forEach(element => {
         if (element.uid === this.otherUsersID) {
           this.selectedFeeds.push(element);
         }
       });
-      this.loading = false;
-      console.log('all act', this.selectedFeeds);
     });
   }
 

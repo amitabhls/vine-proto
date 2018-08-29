@@ -15,6 +15,7 @@ import { OtherUserProfileComponent } from './other-user-profile/other-user-profi
 import { CompleteRegistrationComponent } from './complete-registration/complete-registration.component';
 import { AuthenticationService } from '../../_core/_services/_authentication/authentication.service';
 import { GetstreamService } from '../../_core/_services/_getstream/getstream.service';
+import { FirebaseFeedOperationsService } from '../../_core/_services/_firebaseFeedOperarions/firebase-feed-operations.service';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { GetstreamService } from '../../_core/_services/_getstream/getstream.ser
   ],
   providers: [
     AuthenticationService,
-    GetstreamService
+    GetstreamService,
+    FirebaseFeedOperationsService
   ]
 })
 export class UserModule { }

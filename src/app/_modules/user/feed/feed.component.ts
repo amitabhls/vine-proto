@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../_core/_services/_authentication/authentication.service';
-import { AngularFirestore} from 'angularfire2/firestore';
-import { StreamActivity } from '../../../_shared/_models/Model';
+import { AngularFirestore } from 'angularfire2/firestore';
+import { StreamActivity, Activity } from '../../../_shared/_models/Model';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
 import { Router } from '@angular/router';
-import { GetstreamService } from '../../../_core/_services/_getstream/getstream.service';
 import { LoadingController } from '@ionic/angular';
+import { FirebaseFeedOperationsService } from '../../../_core/_services/_firebaseFeedOperarions/firebase-feed-operations.service';
 
 @Component({
   selector: 'app-feed',
@@ -13,34 +13,31 @@ import { LoadingController } from '@ionic/angular';
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit, OnDestroy {
-userID: string;
-userData: any;
-user: any;
-newMessage: string;
-newActivity: StreamActivity;
-loading: boolean;
-alreadyLiked: boolean;
-activities: StreamActivity[] = [];
-extractDataFromFirestore: any;
+  getAllData: any;
+  userID: string;
+  user: any;
+  newMessage: string;
+  newActivity: Activity;
+  loading: boolean;
+  activities: any[] = [];
+  extractDataFromFirestore: any;
   constructor(
-    private authentication: AuthenticationService,
     private angularFirestore: AngularFirestore,
     private ionicStorage: IonicStorageService,
     private router: Router,
-    private getstream: GetstreamService,
+    private firebaseFeedOperations: FirebaseFeedOperationsService,
     private loadingController: LoadingController
   ) {
-      this.alreadyLiked = false;
-    }
+    this.initFeedPage();
+  }
 
   ngOnInit() {
     this.presentLoading();
-    this.initFeedPage();
     this.getFeed();
   }
 
   ngOnDestroy() {
-    if ( this.extractDataFromFirestore ) {
+    if (this.extractDataFromFirestore) {
       this.extractDataFromFirestore.unsubscribe();
     }
   }
@@ -62,19 +59,6 @@ extractDataFromFirestore: any;
       this.extractDataFromFirestore = this.angularFirestore.collection(`users/`).doc<any>(this.userID).valueChanges().subscribe(res => {
         this.user = res;
         console.log('user data--==', this.user);
-        if (this.user) {
-          this.newActivity = new StreamActivity();
-          this.newActivity.actor = this.user.name;
-          this.newActivity.verb = 'message';
-          this.newActivity.object = this.newMessage;
-          this.newActivity.uid = this.user.uid;
-          this.newActivity.photoURL = this.user.photoURL;
-          this.newActivity.likes = 0;
-          this.newActivity.time = new Date().toISOString();
-          this.newActivity.foreign_id = this.user.name + ':' + this.user.uid;
-          console.log('init Activity', this.newActivity);
-        }
-        console.log('from feed', this.user);
         if (!this.user.isEdited) {
           this.router.navigateByUrl('user/complete-registration');
         }
@@ -82,41 +66,34 @@ extractDataFromFirestore: any;
     }
   }
 
+
   getFeed(): void {
-    this.userData = JSON.parse(this.ionicStorage.getFromLocalStorage('userData'));
-    console.log('[method] getFeed called', this.getstream);
-    this.loading = true;
-    this.getstream.getFeed().then(activities => {
-      this.activities = activities.filter(function(each) {
-        return each.uid;
-      });
-      this.loading = false;
-      console.log('Service promise resolved: ', this.activities);
+    this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
+      this.activities = response;
     });
   }
 
-
   addActivity(): void {
-    console.log('userid', this.newMessage);
-    console.log('newActivity', this.newActivity);
-    this.newActivity.object = this.newMessage;
-    console.log('[method] addActivity called', this.getstream);
-    console.log('new activity', this.newActivity);
-    this.getstream.addActivity(this.newActivity).then(activity_id => {
-      console.log('Service promise resolved: ', activity_id);
-      this.newActivity.object = '';
-      this.getFeed();
-    });
+    if (this.user) {
+      let newActivity: Activity = {
+        uid: this.user.uid,
+        actor: this.user.name,
+        verb: 'message',
+        object: this.newMessage,
+        likes: 0,
+        time: new Date().toISOString(),
+        photoURL: this.user.photoURL
+      };
+      console.log('activity', newActivity);
+      this.firebaseFeedOperations.addFeed(newActivity);
+    }
   }
 
   addLikesToActivity(activity) {
     let likeActivity: number;
     likeActivity = activity.likes;
-      likeActivity = likeActivity + 1;
-      activity.likes = likeActivity;
-      this.alreadyLiked = true;
-      console.log('Activity after Like update', activity);
-      this.getstream.updateActivity([activity]);
+    likeActivity = likeActivity + 1;
+    this.firebaseFeedOperations.updateLike(activity.id, likeActivity);
   }
 
   doRefresh(event): void {
@@ -133,10 +110,6 @@ extractDataFromFirestore: any;
     } else {
       this.router.navigate(['/user/other-profile'], { queryParams: { otherUsersID: activity.uid } });
     }
-  }
-
-  signOut(): void {
-    this.authentication.signOut();
   }
 
 }

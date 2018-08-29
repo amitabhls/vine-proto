@@ -13,7 +13,7 @@ import { GetstreamService } from './_core/_services/_getstream/getstream.service
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
-export class AppComponent implements OnInit, OnDestroy{
+export class AppComponent implements OnInit, OnDestroy {
   appPages = [
     {
       title: 'Feed',
@@ -50,7 +50,7 @@ export class AppComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
-    window.console.log = function() {};
+   // window.console.log = function() {};
     this.initializeApp();
     this.checkCurrentAuthStatus();
     this.followOnGetstream();

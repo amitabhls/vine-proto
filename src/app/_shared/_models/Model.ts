@@ -33,3 +33,14 @@ export class Upload {
       this.file = file;
     }
   }
+
+  export class Activity {
+      id?: string;
+      uid: string;
+      actor: string;
+      verb: string;
+      object: string;
+      likes: number;
+      time: string;
+      photoURL: string;
+  }
