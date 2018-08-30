@@ -83,6 +83,9 @@ export class FeedComponent implements OnInit, OnDestroy {
             this.activities[j] = temp;
           }
         }
+        // if (i === 0) {
+        //   this.activitiesStoredLocally = this.activities;
+        // }
       }
     });
   }
@@ -126,11 +129,13 @@ export class FeedComponent implements OnInit, OnDestroy {
         time: new Date().toISOString(),
         photoURL: this.user.photoURL
       };
-      console.log('activity', newActivity);
       this.activitiesStoredLocally.push(newActivity);
       this.firebaseFeedOperations.addFeed(newActivity);
+      console.log('activity-----', newActivity, this.activitiesStoredLocally);
+
       this.newMessage = '';
     }
+
   }
 
   addLikesToActivity(activity) {
@@ -141,9 +146,9 @@ export class FeedComponent implements OnInit, OnDestroy {
     this.activitiesStoredLocally.forEach((element, i) => {
       if (element.id === activity.id) {
         this.activitiesStoredLocally[i].likes = likeActivity;
+        this.firebaseFeedOperations.updateLike(activity.id, likeActivity);
       }
     });
-    this.firebaseFeedOperations.updateLike(activity.id, likeActivity);
   }
 
   doRefresh(event): void {

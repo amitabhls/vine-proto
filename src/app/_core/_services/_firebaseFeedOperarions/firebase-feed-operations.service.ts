@@ -24,7 +24,7 @@ export class FirebaseFeedOperationsService implements OnDestroy {
     return this.allActivities;
   }
 
-  updateLike(docId: string, likeValue: number): void {
+  updateLike(docId, likeValue): void {
     this.angularFirestore.collection('feeds/').doc(docId).set({likes: likeValue}, {merge: true});
   }
 

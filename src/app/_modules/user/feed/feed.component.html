@@ -42,7 +42,7 @@
 								<h3 (click)="viewOtherProfile(activity)">{{activity.actor}}</h3>
 								<h5>{{activity.time | date:"medium"}}</h5>
 							</ion-label>
-							<ion-button class="post-like-btn" (click)="addLikesToActivity(activity)">
+							<ion-button [disabled]="userID === activity.uid" class="post-like-btn" (click)="addLikesToActivity(activity)">
 								<i class="fa fa-thumbs-o-up"></i>
 								<sup><span>{{activity.likes}}</span></sup>
 							</ion-button>
@@ -56,8 +56,8 @@
 					</div>
 				</div>
 				<!-- <ion-spinner name="dots"></ion-spinner> -->
-				<div class="text-center" *ngIf="!activities?.length && loading" text-center>
-					<div *ngIf="!activities.length && loadingActivity" text-center>
+				<div class="text-center" *ngIf="!activitiesStoredLocally?.length && loading" text-center>
+					<div *ngIf="!activitiesStoredLocally.length && loadingActivity" text-center>
 						<ion-spinner name="dots"></ion-spinner>
 						<div>Loading Feeds..</div>
 					</div>
@@ -67,5 +67,4 @@
 			</ion-col>
 		</ion-row>
 	</ion-grid>
-
 </ion-content>
