@@ -10,7 +10,7 @@
 
 .cover-image-login {
 	width: 100%; overflow: hidden;
-	position: relative; height: 40vh;
+	position: relative; height: 41vh;
 	
 	img {
 		display: block; width: 100%;
@@ -29,12 +29,18 @@
 		margin: 6.5vh auto 5vh; 
 	}
 	.cover-image-login {
-		height: 42vh;
-	}  // cover-image-login
+		height: 45vh;
+	}
 	.login-btn, .login-btn:hover, .login-btn:focus, .login-btn:active {
-		margin-top: 24vh;
+		margin-top: 21vh;
 	}
 } 
+
+@media (min-height: 1200px) {
+	.login-btn, .login-btn:hover, .login-btn:focus, .login-btn:active {
+		margin-top: 20vh;
+	}
+}
 // @media (min-height: 900px) {
 // 	.grey-btn, .grey-btn:hover, .grey-btn:focus, .grey-btn:active {
 // 		margin: 6vh auto 0;

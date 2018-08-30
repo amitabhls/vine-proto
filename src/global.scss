@@ -19,8 +19,6 @@ body * {
 	--ion-font-family: Roboto;
 }
 
-
-
 // header css
 .header-md::after {
 	background: none;
@@ -76,7 +74,8 @@ body * {
 		padding-right: 0; margin: 0;
 	}
 
-	ion-icon.sc-ion-back-button-ios {
+	ion-icon.sc-ion-back-button-ios,
+	ion-icon.sc-ion-back-button-md {
 		display: none;
 	}
 
@@ -199,6 +198,7 @@ ion-textarea {
   background-color: #62717a;
 }
 
+// footer btn 
 .footer-btn, .footer-btn:hover, .footer-btn:active, .footer-btn:focus {
 	--margin-top: 0; --margin-bottom: 0; 
 	margin: 0; width: 100%; border-radius: 0;
@@ -208,7 +208,7 @@ ion-textarea {
 	font-weight: 500; letter-spacing: 1px;
 	text-transform: initial;
 	box-shadow: none;
-	position: fixed; left:0; bottom: 0;
+	position: fixed; left:0; bottom: 0 !important;
 }
 
 // general 
@@ -278,12 +278,11 @@ ion-popover ion-backdrop {
 
 	img {
 	height: 32px; width: 32px;
-	object-fit: cover;
+	object-fit: cover; cursor: pointer;
 	}
 }
 
 //side menu css 
-
 .vine-app-sidemenu {
 	margin-top: 10px; 
 
@@ -293,24 +292,16 @@ ion-popover ion-backdrop {
 		padding: 0 15px;
 
 		ion-icon {
-			font-size: 22px; margin-right: 10px;
+			font-size: 21px; margin-right: 12px;
 			margin-top: 2px;
 		}
 	}
 }
 
-ion-footer {
-	background: #e8eef2; 
-}
-
-.footer-md::before {
-	background-image: none;
-}
-
 .sign-out-btn {
 	position: absolute;
-    top: 15px;
-    right: 13px;
+	top: 15px;
+	right: 11px;
 	color: #62717a;
 	--background: transparent;
 	--box-shadow: none;
@@ -321,6 +312,9 @@ ion-footer {
 	// margin-bottom: 12px;
 	--ion-color-contrast: #62717a;
 	--ripple-color: transparent;
+	--padding-start: 8px; --padding-end: 8px;
+	--border-width: 0;
+	border: 0; --border-radius: 0;
 }
 
 .vine-app-sidemenu-header, .vine-app-sidemenu-header ion-toolbar:first-child {
@@ -338,12 +332,22 @@ ion-footer {
 	max-width: 235px;
 }
 
+// general
 .button-solid.sc-ion-button-md-h, .button-solid.sc-ion-button-md-h:hover,
 .button-solid.sc-ion-button-md-h:focus, .button-solid.sc-ion-button-md-h:active {
 	--ion-color-base: transparent;
 	--box-shadow: none;
 }
 
+ion-footer {
+	background: #e8eef2; 
+}
+
+.footer-md::before {
+	background-image: none;
+}
+
+// media styles
 @media (min-width: 600px) {
 	.footer-btn, .footer-btn:hover, .footer-btn:active, .footer-btn:focus {
 		width: 360px; margin-left: auto; margin-right: auto;
@@ -370,16 +374,6 @@ ion-footer {
 	}
 }
 
-.menu-item {
-  padding-left: 10px;
-}
-
 ion-toolbar {
   position: relative;
-}
-
-.logout {
-  position: absolute;
-  top: 20px;
-  right: 20px;
 }
