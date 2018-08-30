@@ -49,7 +49,7 @@
 
 					<!--  feeds list -->
 					<ion-list class="feed-list-wrap" *ngIf="selectedFeeds.length && !loading">
-					<div class="feed-list" *ngFor="let activity of selectedFeeds; let i = index">
+					<div class="feed-list" *ngFor="let activity of selectedFeeds.slice().reverse(); let i = index">
 						<!-- <div *ngIf="i<=10"> -->
 						<ion-item>
 							<ion-avatar slot="start">

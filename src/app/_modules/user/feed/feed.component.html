@@ -33,7 +33,7 @@
 
 				<!--  feeds list -->
 				<ion-list class="feed-list-wrap" *ngIf="activities?.length && !loading">
-					<div class="feed-list" *ngFor="let activity of activities">
+					<div class="feed-list" *ngFor="let activity of activities.slice().reverse()">
 						<ion-item>
 							<ion-avatar slot="start">
 								<img [src]="activity.photoURL" alt="Profile Image" (click)="viewOtherProfile(activity)" />

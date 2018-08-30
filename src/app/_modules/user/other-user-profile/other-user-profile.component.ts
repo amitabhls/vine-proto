@@ -87,6 +87,17 @@ export class OtherUserProfileComponent implements OnInit, OnDestroy {
         if (element.uid === this.otherUsersID) {
           this.selectedFeeds.push(element);
         }
+        for (let i = (this.selectedFeeds.length - 1); i >= 0 ; i = i - 1) {
+          for (let j = 1; j <= i; j = j + 1) {
+            let a = new Date(this.selectedFeeds[ j - 1 ].time).getTime();
+            let b = new Date(this.selectedFeeds[ j ].time).getTime();
+            if (a > b) {
+              let temp = this.selectedFeeds[j - 1];
+              this.selectedFeeds[j - 1] = this.selectedFeeds[j];
+              this.selectedFeeds[j] = temp;
+            }
+          }
+      }
       });
     });
   }

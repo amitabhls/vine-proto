@@ -6,6 +6,7 @@ import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ioni
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { FirebaseFeedOperationsService } from '../../../_core/_services/_firebaseFeedOperarions/firebase-feed-operations.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-feed',
@@ -13,13 +14,14 @@ import { FirebaseFeedOperationsService } from '../../../_core/_services/_firebas
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit, OnDestroy {
+  sortedActivities;
   getAllData: any;
   userID: string;
   user: any;
   newMessage: string;
   newActivity: Activity;
   loading: boolean;
-  activities: any[] = [];
+  activities: any;
   extractDataFromFirestore: any;
   constructor(
     private angularFirestore: AngularFirestore,
@@ -28,12 +30,13 @@ export class FeedComponent implements OnInit, OnDestroy {
     private firebaseFeedOperations: FirebaseFeedOperationsService,
     private loadingController: LoadingController
   ) {
-    this.initFeedPage();
-  }
+      this.initFeedPage();
+    }
 
   ngOnInit() {
     this.presentLoading();
     this.getFeed();
+    console.log('give result', this.getFeed());
   }
 
   ngOnDestroy() {
@@ -67,11 +70,23 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
 
-  getFeed(): void {
+  getFeed() {
     this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
       this.activities = response;
-    });
+      for (let i = (this.activities.length - 1); i >= 0 ; i = i - 1) {
+          for (let j = 1; j <= i; j = j + 1) {
+            let a = new Date(this.activities[ j - 1 ].time).getTime();
+            let b = new Date(this.activities[ j ].time).getTime();
+            if (a > b) {
+              let temp = this.activities[j - 1];
+              this.activities[j - 1] = this.activities[j];
+              this.activities[j] = temp;
+            }
+          }
+      }
+      });
   }
+
 
   addActivity(): void {
     if (this.user) {
@@ -86,6 +101,7 @@ export class FeedComponent implements OnInit, OnDestroy {
       };
       console.log('activity', newActivity);
       this.firebaseFeedOperations.addFeed(newActivity);
+      this.newMessage = '';
     }
   }
 
