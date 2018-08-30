@@ -32,8 +32,8 @@
 			<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-lg="8" offset-lg="2" size-xl="6" offset-xl="3">
 
 				<!--  feeds list -->
-				<ion-list class="feed-list-wrap" *ngIf="activities?.length && !loading">
-					<div class="feed-list" *ngFor="let activity of activities.slice().reverse()">
+				<ion-list class="feed-list-wrap" *ngIf="activitiesStoredLocally?.length && !loading">
+					<div class="feed-list" *ngFor="let activity of activitiesStoredLocally.slice().reverse()">
 						<ion-item>
 							<ion-avatar slot="start">
 								<img [src]="activity.photoURL" alt="Profile Image" (click)="viewOtherProfile(activity)" />
@@ -50,7 +50,7 @@
 						<p class="post-snippet">{{activity.object}}</p>
 					</div>
 				</ion-list>
-				<div class="row" *ngIf="!activities?.length && !loading" text-center>
+				<div class="row" *ngIf="!activitiesStoredLocally?.length && !loading" text-center>
 					<div class="ion-col text-center">
 						<p>No activities available</p>
 					</div>

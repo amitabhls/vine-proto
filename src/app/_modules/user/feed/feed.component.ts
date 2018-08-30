@@ -6,7 +6,6 @@ import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ioni
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
 import { FirebaseFeedOperationsService } from '../../../_core/_services/_firebaseFeedOperarions/firebase-feed-operations.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-feed',
@@ -14,6 +13,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit, OnDestroy {
+  activitiesStoredLocally: Activity[];
   sortedActivities;
   getAllData: any;
   userID: string;
@@ -30,13 +30,13 @@ export class FeedComponent implements OnInit, OnDestroy {
     private firebaseFeedOperations: FirebaseFeedOperationsService,
     private loadingController: LoadingController
   ) {
-      this.initFeedPage();
-    }
+    this.initFeedPage();
+  }
 
   ngOnInit() {
     this.presentLoading();
     this.getFeed();
-    console.log('give result', this.getFeed());
+    this.storeDataLocally();
   }
 
   ngOnDestroy() {
@@ -73,20 +73,47 @@ export class FeedComponent implements OnInit, OnDestroy {
   getFeed() {
     this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
       this.activities = response;
-      for (let i = (this.activities.length - 1); i >= 0 ; i = i - 1) {
-          for (let j = 1; j <= i; j = j + 1) {
-            let a = new Date(this.activities[ j - 1 ].time).getTime();
-            let b = new Date(this.activities[ j ].time).getTime();
-            if (a > b) {
-              let temp = this.activities[j - 1];
-              this.activities[j - 1] = this.activities[j];
-              this.activities[j] = temp;
-            }
+      for (let i = (this.activities.length - 1); i >= 0; i = i - 1) {
+        for (let j = 1; j <= i; j = j + 1) {
+          let a = new Date(this.activities[j - 1].time).getTime();
+          let b = new Date(this.activities[j].time).getTime();
+          if (a > b) {
+            let temp = this.activities[j - 1];
+            this.activities[j - 1] = this.activities[j];
+            this.activities[j] = temp;
           }
+        }
       }
-      });
+    });
   }
 
+
+  // getFeed2() {
+  //   let activityList;
+  //   this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
+  //     activityList = response;
+  //     for (let i = (activityList.length - 1); i >= 0 ; i = i - 1) {
+  //         for (let j = 1; j <= i; j = j + 1) {
+  //           let a = new Date(activityList[ j - 1 ].time).getTime();
+  //           let b = new Date(activityList[ j ].time).getTime();
+  //           if (a > b) {
+  //             let temp = activityList[j - 1];
+  //             activityList[j - 1] = activityList[j];
+  //             activityList[j] = temp;
+  //           }
+  //         }
+  //     }
+  //     console.log('before returning', activityList);
+  //     return activityList;
+  //     });
+  // }
+
+  storeDataLocally() {
+    setTimeout(() => {
+      this.activitiesStoredLocally = this.activities;
+      console.log('local data', this.activitiesStoredLocally);
+    }, 4000);
+  }
 
   addActivity(): void {
     if (this.user) {
@@ -100,6 +127,7 @@ export class FeedComponent implements OnInit, OnDestroy {
         photoURL: this.user.photoURL
       };
       console.log('activity', newActivity);
+      this.activitiesStoredLocally.push(newActivity);
       this.firebaseFeedOperations.addFeed(newActivity);
       this.newMessage = '';
     }
@@ -107,8 +135,14 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   addLikesToActivity(activity) {
     let likeActivity: number;
+    console.log('activity selected', activity);
     likeActivity = activity.likes;
     likeActivity = likeActivity + 1;
+    this.activitiesStoredLocally.forEach((element, i) => {
+      if (element.id === activity.id) {
+        this.activitiesStoredLocally[i].likes = likeActivity;
+      }
+    });
     this.firebaseFeedOperations.updateLike(activity.id, likeActivity);
   }
 
