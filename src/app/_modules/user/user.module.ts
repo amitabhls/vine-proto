@@ -15,6 +15,7 @@ import { OtherUserProfileComponent } from './other-user-profile/other-user-profi
 import { CompleteRegistrationComponent } from './complete-registration/complete-registration.component';
 import { AuthenticationService } from '../../_core/_services/_authentication/authentication.service';
 import { GetstreamService } from '../../_core/_services/_getstream/getstream.service';
+import { Camera } from '@ionic-native/camera/ngx';
 import { FirebaseFeedOperationsService } from '../../_core/_services/_firebaseFeedOperarions/firebase-feed-operations.service';
 
 @NgModule({
@@ -37,7 +38,8 @@ import { FirebaseFeedOperationsService } from '../../_core/_services/_firebaseFe
   providers: [
     AuthenticationService,
     GetstreamService,
-    FirebaseFeedOperationsService
+    FirebaseFeedOperationsService,
+    Camera
   ]
 })
 export class UserModule { }

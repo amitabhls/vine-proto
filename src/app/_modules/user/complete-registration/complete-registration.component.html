@@ -1,5 +1,5 @@
 <ion-header class="header-vine">
-    <ion-menu-button></ion-menu-button>
+  <ion-menu-button></ion-menu-button>
   <ion-toolbar>
     <ion-title>Complete Registration</ion-title>
   </ion-toolbar>
@@ -12,13 +12,19 @@
       <ion-col no-padding>
         <!-- the below div will contain the profile pic of the user -->
         <div class="profile-pic-wrap">
+          <!-- <img *ngIf="oldPhotoURL && !photoDownloadURL" [src]="oldPhotoURL" alt="Profile Image" />-->
           <img *ngIf="photoDownloadURL" [src]="photoDownloadURL" alt="Profile Image" />
-          <div *ngIf="!photoDownloadURL" class="img-overlay">
-            <span class="fa fa-upload fa-2x" margin-top></span>
-            <input class="file-input" type="file" (change)="chooseFiles($event)" accept=".png,.jpg" />
-            <p text-center>Upload a Image</p>
+          <div class="img-overlay">
+            <a *ngIf="isPlatformCordova" (click)="grabImageFromPhone(0);">
+              <span class="fa fa-upload upload--btn" margin-top></span>
+            </a>
+            <label *ngIf="!isPlatformCordova">
+              <span class="fa fa-upload upload--btn" margin-top></span>
+              <input type="file" (change)="chooseFiles($event)" accept=".png,.jpg" style="display: none" />
+            </label>
+            <!-- <p class="upload-profile-pic-txt ">Upload Profile Pic</p> -->
           </div>
-        </div>  <!-- profile-pic-wrap -->
+        </div> <!-- profile-pic-wrap -->
       </ion-col>
     </ion-row>
 
@@ -26,39 +32,46 @@
       <ion-col size="10" offset="1" size-sm="8" offset-sm="2" size-lg="6" offset-lg="3">
         <!-- registration form -->
         <form [formGroup]="completeRegistrationForm">
-        <ion-list class="registration-form-wrap">
-          <ion-item>
-            <ion-label position="floating">Name</ion-label>
-            <ion-input formControlName="userName" type="text" [(ngModel)]="name"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Email</ion-label>
-            <ion-input formControlName="userEmail" type="text" [(ngModel)]="email"></ion-input>
-          </ion-item>
-          <div text-center *ngIf="completeRegistrationForm.controls.userEmail.dirty && completeRegistrationForm.controls.userEmail.invalid">
+          <ion-list class="registration-form-wrap">
+            <ion-item>
+              <ion-label position="floating">Name</ion-label>
+              <ion-input formControlName="userName" type="text" [(ngModel)]="name"></ion-input>
+            </ion-item>
+            <div text-center *ngIf="completeRegistrationForm.controls.userName.invalid">
+              Please enter a valid name.
+            </div>
+            <ion-item>
+              <ion-label position="floating">Email</ion-label>
+              <ion-input formControlName="userEmail" type="text" [(ngModel)]="email"></ion-input>
+            </ion-item>
+            <div text-center *ngIf="completeRegistrationForm.controls.userEmail.dirty && completeRegistrationForm.controls.userEmail.invalid">
               Please enter a valid email.
-          </div>
-          <ion-item>
-            <ion-label position="floating">Phone</ion-label>
-            <ion-input formControlName="userPhone" type="tel" [(ngModel)]="phone"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Location</ion-label>
-            <ion-select formControlName="userLocation" [interfaceOptions]="customPopoverOptions" interface="popover"  >
-              <ion-select-option value="California">California</ion-select-option>
-              <ion-select-option value="New York">New York</ion-select-option>
-              <ion-select-option value="Washington">Washington</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <ion-item>
-            <ion-label position="floating">Address</ion-label>
-            <ion-textarea formControlName="userHomeAddress" rows="4" ></ion-textarea>
-          </ion-item>
-        </ion-list> 
-      </form>
+            </div>
+            <ion-item>
+              <ion-label position="floating">Phone</ion-label>
+              <ion-input formControlName="userPhone" type="tel" [(ngModel)]="phone"></ion-input>
+            </ion-item>
+            <div text-center *ngIf="completeRegistrationForm.controls.userPhone.invalid">
+              Please enter a valid phone number.
+            </div>
+            <ion-item>
+              <ion-label position="floating">Location</ion-label>
+              <ion-select formControlName="userLocation" [interfaceOptions]="customPopoverOptions" interface="popover">
+                <ion-select-option value="California">California</ion-select-option>
+                <ion-select-option value="New York">New York</ion-select-option>
+                <ion-select-option value="Washington">Washington</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item>
+              <ion-label position="floating">Address</ion-label>
+              <ion-textarea formControlName="userHomeAddress" rows="4"></ion-textarea>
+            </ion-item>
+          </ion-list>
+        </form>
       </ion-col>
     </ion-row>
   </ion-grid>
-  <ion-button [disabled]="completeRegistrationForm.invalid" (click)="updateDetails()" expand="full" class="footer-btn">Complete Registration</ion-button>
+  <ion-button [disabled]="completeRegistrationForm.invalid" (click)="updateDetails()" expand="full" class="footer-btn">Complete
+    Registration
+  </ion-button>
 </ion-content>
-

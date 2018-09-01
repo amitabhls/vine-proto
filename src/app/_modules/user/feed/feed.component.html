@@ -33,13 +33,15 @@
 
 				<!--  feeds list -->
 				<ion-list class="feed-list-wrap" *ngIf="activitiesStoredLocally?.length && !loading">
-					<div class="feed-list" *ngFor="let activity of activitiesStoredLocally.slice().reverse()">
+					<div class="feed-list" *ngFor="let activity of activitiesStoredLocally.slice().reverse(); let i = index">
 						<ion-item>
 							<ion-avatar slot="start">
-								<img [src]="activity.photoURL" alt="Profile Image" (click)="viewOtherProfile(activity)" />
+								<!-- <img *ngIf="user.uid===activity.uid" [src]="user.photoURL" alt="Profile self Image" (click)="viewOtherProfile(activity)" /> -->
+								<img [src]="imageArray[i]" alt="Profile other Image" (click)="viewOtherProfile(activity)" />
 							</ion-avatar>
 							<ion-label>
-								<h3 (click)="viewOtherProfile(activity)">{{activity.actor}}</h3>
+								<h3 *ngIf="user.uid===activity.uid" (click)="viewOtherProfile(activity)">{{user.name}}</h3>
+								<h3 *ngIf="user.uid!==activity.uid" (click)="viewOtherProfile(activity)">{{activity.actor}}</h3>
 								<h5>{{activity.time | date:"medium"}}</h5>
 							</ion-label>
 							<ion-button [disabled]="userID === activity.uid" class="post-like-btn" (click)="addLikesToActivity(activity)">

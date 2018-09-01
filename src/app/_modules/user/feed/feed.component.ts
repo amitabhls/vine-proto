@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../../_core/_services/_authentication/authentication.service';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { StreamActivity, Activity } from '../../../_shared/_models/Model';
+import { UserData, Activity } from '../../../_shared/_models/Model';
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
 import { Router } from '@angular/router';
 import { LoadingController } from '@ionic/angular';
@@ -13,6 +13,10 @@ import { FirebaseFeedOperationsService } from '../../../_core/_services/_firebas
   styleUrls: ['./feed.component.scss']
 })
 export class FeedComponent implements OnInit, OnDestroy {
+  allUsersData: UserData[];
+  testarray: any[] = [];
+  imageArray: any[] = [];
+  allUserDetails: any;
   activitiesStoredLocally: Activity[];
   sortedActivities;
   getAllData: any;
@@ -35,6 +39,8 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.presentLoading();
+    // this.getFeed();
+    // this.extractImageLink();
     this.getFeed();
     this.storeDataLocally();
   }
@@ -47,13 +53,18 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   async presentLoading() {
     const loading = await this.loadingController.create({
-      duration: 1000,
+      duration: 6000,
       content: 'Please wait...',
       translucent: true,
       cssClass: 'custom-class custom-loading'
     });
     return await loading.present();
   }
+
+  // imageLink() {
+  //   this.activitiesStoredLocally.forEach(element => {
+  //   });
+  // }
 
   initFeedPage() {
     this.userID = this.ionicStorage.getUserID();
@@ -69,25 +80,103 @@ export class FeedComponent implements OnInit, OnDestroy {
     }
   }
 
+  changeImageLinkInFeed() {
+    this.imageArray.length = 0;
 
-  getFeed() {
-    this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
-      this.activities = response;
-      for (let i = (this.activities.length - 1); i >= 0; i = i - 1) {
-        for (let j = 1; j <= i; j = j + 1) {
-          let a = new Date(this.activities[j - 1].time).getTime();
-          let b = new Date(this.activities[j].time).getTime();
-          if (a > b) {
-            let temp = this.activities[j - 1];
-            this.activities[j - 1] = this.activities[j];
-            this.activities[j] = temp;
+    this.angularFirestore.collection(`users/`).valueChanges().subscribe(userData => {
+      this.allUsersData = userData;
+      for (let i = 0; i < this.activitiesStoredLocally.length; i = i + 1) {
+        for (let j = 0; j < this.allUsersData.length; j = j + 1) {
+          if (this.activitiesStoredLocally[i].uid === this.allUsersData[j].uid) {
+            this.imageArray.push(this.allUsersData[j].photoURL);
+            this.testarray.push(this.allUsersData[j].email);
           }
         }
-        // if (i === 0) {
-        //   this.activitiesStoredLocally = this.activities;
-        // }
       }
+      this.imageArray.reverse();
+      this.testarray.reverse();
+      console.log('image links', this.imageArray);
+      console.log('email links', this.testarray);
+      // allFeeds.forEach((element1) => {
+      //   allUsersData.forEach(element2 => {
+      //     if (element1.uid === element2.uid) {
+      //       this.imageArray.push(element2.photoURL);
+      //     }
+      //   });
+      // });
     });
+
+/*
+
+      this.angularFirestore.collection(`users/`).valueChanges().subscribe(userData => {
+        let allUsersData = userData;
+        for (let i = 0; i < this.activitiesStoredLocally.length; i = i + 1) {
+          for (let j = 0; j < allUsersData.length; j = j + 1) {
+            if (this.activitiesStoredLocally[i].uid === allUsersData[j].uid) {
+              this.imageArray.push(allUsersData[j].photoURL);
+              this.testarray.push(allUsersData[j].email);
+            }
+          }
+        }
+        // this.imageArray.slice().reverse();
+        // this.testarray.slice().reverse();
+        // console.log('image links', this.imageArray);
+        // console.log('email links', this.testarray);
+        // allFeeds.forEach((element1) => {
+        //   allUsersData.forEach(element2 => {
+        //     if (element1.uid === element2.uid) {
+        //       this.imageArray.push(element2.photoURL);
+        //     }
+        //   });
+        // });
+      });
+
+      */
+  }
+
+  // extractImageLink() {
+  //   this.imageLinkArray.length = 0;
+  //   this.angularFirestore.collection('users/').valueChanges().subscribe(response => {
+  //     this.allUserDetails = response;
+  //     console.log('init activities', this.activities);
+  //     this.activities.forEach(element1 => {
+  //       console.log('inside for 1');
+  //       this.allUserDetails.forEach(element2 => {
+  //         if (element1.uid === element2.uid) {
+  //           this.imageLinkArray.push(element2.photoURL);
+  //         }
+  //       });
+  //     });
+  //   });
+  // }
+
+
+  getFeed() {
+    {
+      this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
+        console.log('response response--->', response);
+        this.activities = response;
+        for (let i = (this.activities.length - 1); i >= 0; i = i - 1) {
+          for (let j = 1; j <= i; j = j + 1) {
+            let a = new Date(this.activities[j - 1].time).getTime();
+            let b = new Date(this.activities[j].time).getTime();
+            if (a > b) {
+              let temp = this.activities[j - 1];
+              this.activities[j - 1] = this.activities[j];
+              this.activities[j] = temp;
+            }
+          }
+        }
+      });
+    }
+  }
+
+  storeDataLocally() {
+    setTimeout(() => {
+      this.activitiesStoredLocally = this.activities;
+      this.changeImageLinkInFeed();
+      console.log('local data', this.activitiesStoredLocally);
+    }, 6000);
   }
 
 
@@ -111,12 +200,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   //     });
   // }
 
-  storeDataLocally() {
-    setTimeout(() => {
-      this.activitiesStoredLocally = this.activities;
-      console.log('local data', this.activitiesStoredLocally);
-    }, 4000);
-  }
+
 
   addActivity(): void {
     if (this.user) {
@@ -130,7 +214,9 @@ export class FeedComponent implements OnInit, OnDestroy {
         photoURL: this.user.photoURL
       };
       this.activitiesStoredLocally.push(newActivity);
+      this.imageArray.unshift(newActivity.photoURL);
       this.firebaseFeedOperations.addFeed(newActivity);
+
       console.log('activity-----', newActivity, this.activitiesStoredLocally);
 
       this.newMessage = '';

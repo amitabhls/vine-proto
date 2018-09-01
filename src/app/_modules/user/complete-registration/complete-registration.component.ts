@@ -4,11 +4,12 @@ import { AuthenticationService } from '../../../_core/_services/_authentication/
 import { IonicStorageService } from '../../../_core/_services/_ionicStorage/ionic-storage.service';
 import * as firebase from 'firebase';
 import { Router } from '@angular/router';
-import { LoadingController } from '@ionic/angular';
+import { LoadingController, AlertController, Platform } from '@ionic/angular';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { Observable } from 'rxjs';
 import { finalize } from 'rxjs/operators';
+import { Camera, CameraOptions } from '@ionic-native/camera/ngx';
 
 @Component({
   selector: 'app-complete-registration',
@@ -16,6 +17,8 @@ import { finalize } from 'rxjs/operators';
   styleUrls: ['./complete-registration.component.scss']
 })
 export class CompleteRegistrationComponent implements OnInit, OnDestroy {
+  isPlatformCordova: boolean;
+  selectedPhoto: any;
   completeRegistrationForm: FormGroup;
   user: any;
   name: string;
@@ -44,8 +47,17 @@ export class CompleteRegistrationComponent implements OnInit, OnDestroy {
     private angularFirestore: AngularFirestore,
     private loadingController: LoadingController,
     private router: Router,
-    private angularFireStorage: AngularFireStorage
+    private angularFireStorage: AngularFireStorage,
+    public camera: Camera,
+    private alertController: AlertController,
+    private platform: Platform
   ) {
+
+    if (this.platform.is('cordova')) {
+      this.isPlatformCordova = true;
+    } else {
+      this.isPlatformCordova = false;
+    }
   }
 
   ngOnInit() {
@@ -62,8 +74,8 @@ export class CompleteRegistrationComponent implements OnInit, OnDestroy {
   initForm(): void {
     this.completeRegistrationForm = this.formBuilder.group({
       userName: new FormControl (this.name, [Validators.required]),
-      userEmail: new FormControl ('' || this.email, [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]),
-      userPhone: new FormControl ('' || this.phone),
+      userEmail: new FormControl ('' , [Validators.required, Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$')]),
+      userPhone: new FormControl('', [Validators.pattern('^(\\+\\d{1,4}[- ]?)?\\d{7,}$')] ),
       userLocation: new FormControl ('', [Validators.required]),
       userHomeAddress: new FormControl ('')
     });
@@ -147,15 +159,63 @@ export class CompleteRegistrationComponent implements OnInit, OnDestroy {
     return await loading.present();
   }
 
+  grabImageFromPhone(option: number) {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      sourceType: option
+    };
+
+    this.camera.getPicture(options).then((imageData) => {
+      this.presentLoading(5000);
+
+      this.selectedPhoto  = this.dataURItoBlob('data:image/jpeg;base64,' + imageData);
+
+      this.uploadFromPhone();
+    }, (err) => {
+      console.log('error', err);
+    });
+  }
+
+  dataURItoBlob(dataURI) {
+    let binary = atob(dataURI.split(',')[1]);
+    let array = [];
+    for (let i = 0; i < binary.length; i++) {
+      array.push(binary.charCodeAt(i));
+    }
+    return new Blob([new Uint8Array(array)], {type: 'image/jpeg'});
+  }
+
+
+  uploadFromPhone() {
+    if (this.selectedPhoto) {
+      const uploadTask = this.angularFireStorage.upload('/userProfilePhotos/' + this.userID, this.selectedPhoto);
+      // const uploadTask = firebase.storage().ref().child('/userProfilePhotos/' + this.userID).put(this.selectedPhoto);
+      const storageRef = this.angularFireStorage.ref('/userProfilePhotos/' + this.userID);
+      uploadTask.snapshotChanges().pipe(
+        finalize(() => {
+          storageRef.getDownloadURL().subscribe(url => {
+            this.photoDownloadURL = url;
+            console.log(this.photoDownloadURL);
+          });
+        })
+      ).subscribe();
+    }
+  }
+
+
   chooseFiles(event) {
     this.selectedFiles = event.target.files;
+    console.log('selected file', this.selectedFiles.item(0));
     if (this.selectedFiles.item(0)) {
       this.uploadpic();
     }
   }
 
   uploadpic() {
-    this.presentLoading(3000);
+    this.presentLoading(5000);
     const file = this.selectedFiles.item(0);
     const uploadTask = this.angularFireStorage.upload('/userProfilePhotos/' + this.userID, file);
     const storageRef = this.angularFireStorage.ref('/userProfilePhotos/' + this.userID);
@@ -168,5 +228,15 @@ export class CompleteRegistrationComponent implements OnInit, OnDestroy {
         });
       })
     ).subscribe();
+  }
+
+  async presentAlertMultipleButtons(msg) {
+    const alert = await this.alertController.create({
+      header: 'Alert',
+      message: msg,
+      buttons: ['Ok']
+    });
+
+    await alert.present();
   }
 }

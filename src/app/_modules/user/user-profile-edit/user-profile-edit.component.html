@@ -28,19 +28,19 @@
         <ion-list class="my-profile-form-wrap">
           <ion-item>
             <ion-label position="floating">Name</ion-label>
-            <ion-input type="text" [value]="name" disabled></ion-input>
+            <ion-input type="text" [(ngModel)]="name" disabled></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Email</ion-label>
-            <ion-input type="email" [value]="email" disabled></ion-input>
+            <ion-input type="email" [(ngModel)]="email" disabled></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Phone</ion-label>
-            <ion-input type="number" [value]="phoneNumber" disabled></ion-input>
+            <ion-input type="text" [(ngModel)]="phoneNumber" disabled></ion-input>
           </ion-item>
           <ion-item>
             <ion-label position="floating">Location</ion-label>
-            <ion-select [interfaceOptions]="customPopoverOptions" [value]="location" interface="popover" disabled>
+            <ion-select [interfaceOptions]="customPopoverOptions" [(ngModel)]="location" interface="popover" disabled>
               <ion-select-option value="California">California</ion-select-option>
               <ion-select-option value="New York" selected>New York</ion-select-option>
               <ion-select-option value="Washington">Washington</ion-select-option>
@@ -48,7 +48,7 @@
           </ion-item>
           <ion-item>
             <ion-label position="floating">Address</ion-label>
-            <ion-input type="text" [value]="homeAddress" disabled></ion-input>
+            <ion-input type="text" [(ngModel)]="homeAddress" disabled></ion-input>
           </ion-item>
         </ion-list> 
       </ion-col>

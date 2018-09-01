@@ -9,30 +9,40 @@
 </ion-header>
 
 <ion-content class="content-bg">
+	<!-- my-profile form -->
+	<form [formGroup]="updateProfileForm" *ngIf="userData">
+		<ion-grid no-padding>
+			<ion-row>
+				<ion-col no-padding>
+					<!-- the below div will contain the profile pic of the user -->
+					<div class="profile-pic-wrap">
+						<img [src]="oldPhotoURL" *ngIf="oldPhotoURL && !photoDownloadURL" alt="Profile Image" />
+						<img [src]="photoDownloadURL" *ngIf="photoDownloadURL" alt="Profile Image" />
+						<div class="img-overlay">
+							<a *ngIf="isPlatformCordova" (click)="grabImageFromPhone(0);">
+								<span class="fa fa-upload upload--btn" margin-top></span>
+							</a>
+							<label *ngIf="!isPlatformCordova">
+								<span class="fa fa-upload upload--btn" margin-top></span>
+								<input type="file" (change)="chooseFiles($event)" accept=".png,.jpg" style="display: none" />
+							</label>
+							<!-- <p class="upload-profile-pic-txt ">Upload Profile Pic</p> -->
+						</div>
+					</div> <!-- profile-pic-wrap -->
+				</ion-col>
+			</ion-row>
 
-	<ion-grid no-padding>
-		<ion-row>
-			<ion-col no-padding>
-				<!-- the below div will contain the profile pic of the user -->
-				<div class="profile-pic-wrap">
-					<img [src]="photoURL" *ngIf=photoURL alt="Profile Image" />
-					<div class="img-overlay" *ngIf=!photoURL>
-						<span class="fa fa-upload fa-2x" margin-top></span>
-						<p class="upload-profile-pic-txt ">Upload Profile Pic</p>
-					</div>
-				</div> <!-- profile-pic-wrap -->
-			</ion-col>
-		</ion-row>
+			<ion-row>
+				<ion-col size="10" offset="1" size-sm="8" offset-sm="2" size-lg="6" offset-lg="3">
 
-		<ion-row>
-			<ion-col size="10" offset="1" size-sm="8" offset-sm="2" size-lg="6" offset-lg="3">
-				<!-- my-profile form -->
-				<form [formGroup]="updateProfileForm">
 					<ion-list class="my-profile-form-wrap">
 						<ion-item>
 							<ion-label position="floating">Name</ion-label>
 							<ion-input formControlName="userName" type="text" [(ngModel)]="name"></ion-input>
 						</ion-item>
+						<div text-center *ngIf="updateProfileForm.controls.userName.invalid">
+							Please enter a valid name.
+						</div>
 						<ion-item>
 							<ion-label position="floating">Email</ion-label>
 							<ion-input formControlName="userEmail" type="email" [(ngModel)]="email"></ion-input>
@@ -44,6 +54,9 @@
 							<ion-label position="floating">Phone</ion-label>
 							<ion-input formControlName="userPhone" type="tel" [(ngModel)]="phoneNumber"></ion-input>
 						</ion-item>
+						<div text-center *ngIf="updateProfileForm.controls.userPhone.invalid">
+							Please enter a valid number.
+						</div>
 						<ion-item>
 							<ion-label position="floating">Location</ion-label>
 							<ion-select formControlName="userLocation" [interfaceOptions]="customPopoverOptions" [(ngModel)]="location" interface="popover">
@@ -57,9 +70,9 @@
 							<ion-textarea formControlName="userHomeAddress" type="text" [(ngModel)]="homeAddress" rows="4"></ion-textarea>
 						</ion-item>
 					</ion-list>
-				</form>
-			</ion-col>
-		</ion-row>
-	</ion-grid>
-	<ion-button [disabled]="updateProfileForm.invalid" (click)="updateDetails();" expand="full" class="footer-btn">Update Profile</ion-button>
+				</ion-col>
+			</ion-row>
+		</ion-grid>
+		<ion-button [disabled]="updateProfileForm.invalid" (click)="updateDetails(changeImageLinkInFeed);" expand="full" class="footer-btn">Update Profile</ion-button>
+	</form>
 </ion-content>

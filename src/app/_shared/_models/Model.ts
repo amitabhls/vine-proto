@@ -1,8 +1,10 @@
 export interface UserData {
-    uid: string;
-    displayName?: string;
+    uid?: string;
+    homeAddress?: string;
+    isEdited?: boolean;
+    location?: string;
+    name?: string;
     photoURL?: string;
-    providerId?: string;
     phoneNumber?: string;
     email?: string;
 }

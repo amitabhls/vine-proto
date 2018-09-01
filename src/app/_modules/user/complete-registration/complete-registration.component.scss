@@ -41,6 +41,15 @@
 	opacity: 0;
 }
 
+.upload--btn {
+	position: absolute;
+	bottom: 5px;
+	right: 10px;
+	color: #586c75;
+	padding: 5px 10px;
+	font-size: 1.5em;
+}
+
 @media (min-height: 900px) {
 	.profile-pic-wrap {
 		height: 300px;

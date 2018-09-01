@@ -36,8 +36,8 @@ export class AuthenticationService {
     }
   }
 
-  private webLogin(provider: AuthProvider) {
-    return this.angularFireAuth.auth.signInWithPopup(provider)
+  webLogin(provider: AuthProvider) {
+    return this.angularFireAuth.auth.signInWithRedirect(provider)
       .then(() => {
         return this.angularFireAuth.auth.getRedirectResult().then(result => {
           console.log('Login Result', result);

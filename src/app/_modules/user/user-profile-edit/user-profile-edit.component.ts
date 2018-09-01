@@ -44,6 +44,7 @@ export class UserProfileEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    console.log('loaded');
   }
 
   ngOnDestroy() {
