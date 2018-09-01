@@ -3,6 +3,7 @@
 
 *~
 *.sw[mnpcod]
+*.zip
 *.log
 *.tmp
 *.tmp.*
@@ -32,3 +33,4 @@ $RECYCLE.BIN/
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate
+www 4.zip
