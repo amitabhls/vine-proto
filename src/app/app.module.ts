@@ -23,6 +23,7 @@ import { GooglePlus } from '@ionic-native/google-plus/ngx';
 import { TwitterConnect } from '@ionic-native/twitter-connect/ngx';
 import { AuthenticationService } from './_core/_services/_authentication/authentication.service';
 import { GetstreamService } from './_core/_services/_getstream/getstream.service';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,7 +38,8 @@ import { GetstreamService } from './_core/_services/_getstream/getstream.service
     AngularFireAuthModule,
     AngularFireDatabaseModule,
     AngularFireStorageModule,
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production })
   ],
   providers: [
     HttpClient,

@@ -40,7 +40,7 @@
           </ion-item>
           <ion-item>
             <ion-label position="floating">Location</ion-label>
-            <ion-select [interfaceOptions]="customPopoverOptions" [(ngModel)]="location" interface="popover" disabled>
+            <ion-select  [(ngModel)]="location" interface="popover" disabled> <!----[interfaceOptions]="customPopoverOptions"-->
               <ion-select-option value="California">California</ion-select-option>
               <ion-select-option value="New York" selected>New York</ion-select-option>
               <ion-select-option value="Washington">Washington</ion-select-option>

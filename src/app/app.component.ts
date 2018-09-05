@@ -50,7 +50,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-   // window.console.log = function() {};
+    window.console.log = function() {};
     this.initializeApp();
     this.checkCurrentAuthStatus();
     this.followOnGetstream();
