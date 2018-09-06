@@ -31,7 +31,6 @@ export class OtherUserProfileComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private angularFirestore: AngularFirestore,
-    private getstream: GetstreamService,
     private ionicStorage: IonicStorageService,
     private loadingController: LoadingController
   ) {
