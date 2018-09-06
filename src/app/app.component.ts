@@ -17,12 +17,12 @@ export class AppComponent implements OnInit, OnDestroy {
   appPages = [
     {
       title: 'Feed',
-      url: '/user/feed',
+      url: '/user/feed#feed-page',
       icon: 'paper'
     },
     {
       title: 'My Profile',
-      url: '/user/profile',
+      url: '/user/profile#user-profile',
       icon: 'person'
     }
   ];
@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // window.console.log = function() {};
     this.initializeApp();
-    this.checkCurrentAuthStatus();
+    this.checkLoginStatus();
   }
 
   ngOnDestroy() {
@@ -74,11 +74,13 @@ export class AppComponent implements OnInit, OnDestroy {
   checkLoginStatus(): void {
     let token: string;
     token = this.storage.getToken();
-    console.log('token from component', token);
     if (token) {
-      this.presentLoading(2000);
-      this.router.navigateByUrl('user/feed');
+      console.log('token exist');
+      // this.presentLoading(1000);
+      // console.log('location', window.location);
+      this.router.navigateByUrl('user/feed#feed-page');
     } else {
+      console.log('token doesn\'t exist');
       this.checkCurrentAuthStatus();
     }
   }
@@ -88,7 +90,7 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log('user-->>', user);
       this.user = user;
       if (user) {
-        this.presentLoading(2000);
+        // this.presentLoading(2000);
         this.ionicStorage.setToken(this.user.qa);
         this.ionicStorage.setUserID(this.user.uid);
         this.checkNewLogin = this.angularFirestore.collection('users/').doc<any>(user.uid).valueChanges().subscribe(response => {
@@ -98,12 +100,12 @@ export class AppComponent implements OnInit, OnDestroy {
             console.log('response app comp');
             if (response.isEdited) {
               console.log('redirected from app comp');
-              this.router.navigateByUrl('user/feed');
+              this.router.navigateByUrl('user/feed#feed-page');
               if (this.checkNewLogin) {
                 this.checkNewLogin.unsubscribe();
               }
             } else {
-              this.router.navigateByUrl('user/complete-registration');
+              this.router.navigateByUrl('user/complete-registration#complete-registration');
               // this.followOnGetstream();
               if (this.checkNewLogin) {
                 this.checkNewLogin.unsubscribe();
@@ -120,14 +122,14 @@ export class AppComponent implements OnInit, OnDestroy {
                 uid: user.uid
               }
             );
-            this.router.navigateByUrl('user/complete-registration');
+            this.router.navigateByUrl('user/complete-registration#complete-registration');
             if (this.checkNewLogin) {
               this.checkNewLogin.unsubscribe();
             }
           }
         });
       } else {
-        this.router.navigateByUrl('auth');
+        this.router.navigateByUrl('auth/login#login-page');
       }
     });
   }
@@ -136,7 +138,7 @@ export class AppComponent implements OnInit, OnDestroy {
   setStorageAndRedirect(): void {
     this.ionicStorage.setToken(this.user.qa);
     this.ionicStorage.setUserID(this.user.uid);
-    this.router.navigateByUrl('user/complete-registration');
+    this.router.navigateByUrl('user/complete-registration#complete-registration');
   }
 
   // followOnGetstream() {

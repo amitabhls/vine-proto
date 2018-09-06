@@ -41,11 +41,11 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.presentLoading(6000);
+    this.presentLoading(3000);
     // this.getFeed();
     // this.extractImageLink();
     this.getFeed();
-    this.storeDataLocally();
+   // this.storeDataLocally();
   }
 
   ngOnDestroy() {
@@ -77,7 +77,7 @@ export class FeedComponent implements OnInit, OnDestroy {
         this.user = res;
         console.log('user data--==', this.user);
         if (!this.user.isEdited) {
-          this.router.navigateByUrl('user/complete-registration');
+          this.router.navigateByUrl('user/complete-registration#complete-registration');
         }
       });
     }
@@ -86,9 +86,21 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   changeImageLinkInFeed() {
     this.imageArray.length = 0;
-
+    this.testarray.length = 0;
     this.angularFirestore.collection(`users/`).valueChanges().subscribe(userData => {
       this.allUsersData = userData;
+      this.activitiesStoredLocally.forEach(activitiesElement => {
+        this.allUsersData.forEach(userDataElement => {
+          if (activitiesElement.uid === userDataElement.uid) {
+            this.imageArray.push(userDataElement.photoURL);
+            this.testarray.push(userDataElement.email);
+            return true;
+          } else {
+            return false;
+          }
+        });
+      });
+      /*
       for (let i = 0; i < this.activitiesStoredLocally.length; i = i + 1) {
         for (let j = 0; j < this.allUsersData.length; j = j + 1) {
           if (this.activitiesStoredLocally[i].uid === this.allUsersData[j].uid) {
@@ -97,8 +109,21 @@ export class FeedComponent implements OnInit, OnDestroy {
           }
         }
       }
-      this.imageArray.reverse();
-      this.testarray.reverse();
+*/
+      // console.log('image array', this.imageArray);
+      // console.log('email array', );
+      /*
+      for (let i = 0; i < this.activitiesStoredLocally.length; i = i + 1) {
+        for (let j = 0; j < this.allUsersData.length; j = j + 1) {
+          if (this.activitiesStoredLocally[i].uid === this.allUsersData[j].uid) {
+            this.imageArray.push(this.allUsersData[j].photoURL);
+            this.testarray.push(this.allUsersData[j].email);
+          }
+        }
+      }
+      */
+      // this.imageArray.reverse();
+      // this.testarray.reverse();
 
       /*
       console.log('image links', this.imageArray);
@@ -115,7 +140,6 @@ export class FeedComponent implements OnInit, OnDestroy {
     });
 
     /*
-    
           this.angularFirestore.collection(`users/`).valueChanges().subscribe(userData => {
             let allUsersData = userData;
             for (let i = 0; i < this.activitiesStoredLocally.length; i = i + 1) {
@@ -138,7 +162,6 @@ export class FeedComponent implements OnInit, OnDestroy {
             //   });
             // });
           });
-    
           */
   }
 
@@ -160,33 +183,49 @@ export class FeedComponent implements OnInit, OnDestroy {
 
 
   getFeed() {
-    {
-      this.getAllData = this.angularFirestore.collection('feeds/').valueChanges().subscribe(response => {
-        console.log('response response--->', response);
-        this.activities = response;
-        for (let i = (this.activities.length - 1); i >= 0; i = i - 1) {
-          for (let j = 1; j <= i; j = j + 1) {
-            let a = new Date(this.activities[j - 1].time).getTime();
-            let b = new Date(this.activities[j].time).getTime();
-            if (a > b) {
-              let temp = this.activities[j - 1];
-              this.activities[j - 1] = this.activities[j];
-              this.activities[j] = temp;
-            }
-          }
+    this.activities = [];
+    // this.getAllData;
+    const allFeedsRef = this.angularFirestore.collection('feeds/').ref;
+    let data = allFeedsRef.orderBy('time', 'desc').get().then(
+      responseData => {
+        if (!responseData.empty) {
+          responseData.forEach(data => {
+            this.activities.push(data.data());
+          });
         }
+        console.log('data from xyz', this.activities);
+        this.activitiesStoredLocally = this.activities;
+        this.changeImageLinkInFeed();
       });
+    // .valueChanges().subscribe(response => {
+    /*
+    console.log('response response--->', response);
+    this.activities = response;
+    for (let i = (this.activities.length - 1); i >= 0; i = i - 1) {
+      for (let j = 1; j <= i; j = j + 1) {
+        let a = new Date(this.activities[j - 1].time).getTime();
+        let b = new Date(this.activities[j].time).getTime();
+        if (a > b) {
+          let temp = this.activities[j - 1];
+          this.activities[j - 1] = this.activities[j];
+          this.activities[j] = temp;
+        }
+      }
     }
+  });
+  */
   }
+  
+  /*
 
   storeDataLocally() {
-    setTimeout(() => {
-      this.activitiesStoredLocally = this.activities;
+    // setTimeout(() => {
+      this.activitiesStoredLocally = this.activities.reverse();
       this.changeImageLinkInFeed();
-      console.log('local data', this.activitiesStoredLocally);
-    }, 6000);
+    //   console.log('local data', this.activitiesStoredLocally);
+    // }, 6000);
   }
-
+*/
 
   // getFeed2() {
   //   let activityList;
@@ -233,7 +272,7 @@ export class FeedComponent implements OnInit, OnDestroy {
               isImage: true,
               imageLink: this.newMessage
             };
-            this.activitiesStoredLocally.push(this.newActivity);
+            this.activitiesStoredLocally.unshift(this.newActivity);
             this.imageArray.unshift(this.newActivity.photoURL);
             this.firebaseFeedOperations.addFeed(this.newActivity);
           }
@@ -257,7 +296,7 @@ export class FeedComponent implements OnInit, OnDestroy {
                 }
               };
               console.log('updated activity', this.newActivity);
-              this.activitiesStoredLocally.push(this.newActivity);
+              this.activitiesStoredLocally.unshift(this.newActivity);
               this.imageArray.unshift(this.newActivity.photoURL);
               this.firebaseFeedOperations.addFeed(this.newActivity);
               // this.newActivity.isLink = true;
@@ -270,7 +309,7 @@ export class FeedComponent implements OnInit, OnDestroy {
             });
           }
         } else {
-          this.activitiesStoredLocally.push(this.newActivity);
+          this.activitiesStoredLocally.unshift(this.newActivity);
           this.imageArray.unshift(this.newActivity.photoURL);
           this.firebaseFeedOperations.addFeed(this.newActivity);
         }
@@ -332,7 +371,7 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   doRefresh(event): void {
     setTimeout(() => {
-      this.getFeed();
+      // this.getFeed();
       event.target.complete();
     }, 2000);
   }
@@ -340,9 +379,9 @@ export class FeedComponent implements OnInit, OnDestroy {
   viewOtherProfile(activity): void {
     console.log('from feed other user', activity.uid);
     if (activity.uid === this.userID) {
-      this.router.navigateByUrl('/user/profile');
+      this.router.navigateByUrl('/user/profile#user-profile-edit');
     } else {
-      this.router.navigate(['/user/other-profile'], { queryParams: { otherUsersID: activity.uid } });
+      this.router.navigate(['/user/other-profile#other-user-profile-page'], { queryParams: { otherUsersID: activity.uid } });
     }
   }
 
