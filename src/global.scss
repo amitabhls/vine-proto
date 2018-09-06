@@ -211,6 +211,12 @@ ion-textarea {
 	position: fixed; left:0; bottom: 0 !important;
 }
 
+.footer-btn[disabled]  {
+	.button-native[disabled] {
+		opacity: .9;
+	}
+}
+
 // general 
 .content-bg {
 	background: #e8eef2;
