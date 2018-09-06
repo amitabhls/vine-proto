@@ -212,110 +212,109 @@ export class FeedComponent implements OnInit, OnDestroy {
 
   addActivity(): void {
     if (this.newMessage) {
-    const urlRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
-    const imageRegex = /(.jpeg|.png|.jpg|.bmp|.gif)/;
-    // const regex = '([A-Z])\w+';
-    if (this.user) {
-      this.newActivity = {
-        uid: this.user.uid,
-        actor: this.user.name,
-        object: this.newMessage,
-        likes: 0,
-        time: new Date().toISOString(),
-        photoURL: this.user.photoURL,
-        // isLink: true,
-        // linkContent: {
-        //   title: this.linkPreviewResponse.title,
-        //   url: this.linkPreviewResponse.url,
-        //   description: this.linkPreviewResponse.description,
-        //   image: this.linkPreviewResponse.image
-        // }
-      };
-      if (urlRegex.test(this.newMessage)) {
-        this.presentLoading(1000);
-        if (this.newMessage.search(imageRegex) !== -1) {
-          this.newActivity = {
-            ...this.newActivity,
-            isImage: true,
-            imageLink: this.newMessage
-          };
-          this.activitiesStoredLocally.push(this.newActivity);
-          this.imageArray.unshift(this.newActivity.photoURL);
-          this.firebaseFeedOperations.addFeed(this.newActivity);
-        } else {
-          this.linkPreview.getLinkPreview(this.newMessage).subscribe((response: any) => {
-            console.log('response', response);
-            console.log('object', this.newActivity);
-            this.linkPreviewResponse = response;
+      const urlRegex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+      const imageRegex = /(.jpeg|.png|.jpg|.bmp|.gif)/;
+      const youtubeRegex = /(www.youtube.com\/watch\?v=)/;
+      // const regex = '([A-Z])\w+';
+      if (this.user) {
+        this.newActivity = {
+          uid: this.user.uid,
+          actor: this.user.name,
+          object: this.newMessage,
+          likes: 0,
+          time: new Date().toISOString(),
+          photoURL: this.user.photoURL,
+        };
+        if (urlRegex.test(this.newMessage)) {
+          this.presentLoading(1000);
+          if (this.newMessage.search(imageRegex) !== -1) {
             this.newActivity = {
               ...this.newActivity,
-              isLink: true,
-              linkContent: {
-                title: response.title,
-                url: response.url,
-                description: response.description,
-                image: response.image
-              }
+              isImage: true,
+              imageLink: this.newMessage
             };
-            console.log('updated activity', this.newActivity);
             this.activitiesStoredLocally.push(this.newActivity);
             this.imageArray.unshift(this.newActivity.photoURL);
             this.firebaseFeedOperations.addFeed(this.newActivity);
-            // this.newActivity.isLink = true;
-            // this.newActivity.linkContent.title = response.title;
-            // this.newActivity.linkContent.description = response.description;
-            // this.newActivity.linkContent.url = response.url;
-            // this.newActivity.linkContent.image = response.image;
-          }, (error: any) => {
-            console.log('error', error);
-          });
+          }
+          // else if (this.newMessage.search(youtubeRegex) !== -1) {
+          //   console.log('youtube activated');
+          // }
+          else {
+            // else if (this.newMessage.search(youtubeRegex) !== -1)
+            this.linkPreview.getLinkPreview(this.newMessage).subscribe((response: any) => {
+              console.log('response', response);
+              console.log('object', this.newActivity);
+              this.linkPreviewResponse = response;
+              this.newActivity = {
+                ...this.newActivity,
+                isLink: true,
+                linkContent: {
+                  title: response.title,
+                  url: response.url,
+                  description: response.description,
+                  image: response.image
+                }
+              };
+              console.log('updated activity', this.newActivity);
+              this.activitiesStoredLocally.push(this.newActivity);
+              this.imageArray.unshift(this.newActivity.photoURL);
+              this.firebaseFeedOperations.addFeed(this.newActivity);
+              // this.newActivity.isLink = true;
+              // this.newActivity.linkContent.title = response.title;
+              // this.newActivity.linkContent.description = response.description;
+              // this.newActivity.linkContent.url = response.url;
+              // this.newActivity.linkContent.image = response.image;
+            }, (error: any) => {
+              console.log('error', error);
+            });
+          }
+        } else {
+          this.activitiesStoredLocally.push(this.newActivity);
+          this.imageArray.unshift(this.newActivity.photoURL);
+          this.firebaseFeedOperations.addFeed(this.newActivity);
         }
-      } else {
-        this.activitiesStoredLocally.push(this.newActivity);
-        this.imageArray.unshift(this.newActivity.photoURL);
-        this.firebaseFeedOperations.addFeed(this.newActivity);
+        // const checkIfURL = isUrl(this.newMessage);
+        // console.log('new message is url??', checkIfURL);
+        /*
+        let newActivity: Activity = {
+          uid: this.user.uid,
+          actor: this.user.name,
+          verb: 'message',
+          object: this.newMessage,
+          likes: 0,
+          time: new Date().toISOString(),
+          photoURL: this.user.photoURL
+        };
+        */
+
+
+        //  this.newActivity = {
+        //   uid: this.user.uid,
+        //   actor: this.user.name,
+        //   verb: 'link',
+        //   object: this.newMessage,
+        //   likes: 0,
+        //   time: new Date().toISOString(),
+        //   photoURL: this.user.photoURL,
+        //   isLink: true,
+        //   linkContent: {
+        //     title: this.linkPreviewResponse.title,
+        //     url: this.linkPreviewResponse.url,
+        //     description: this.linkPreviewResponse.description,
+        //     image: this.linkPreviewResponse.image
+        //   }
+        // };
+
+        // this.activitiesStoredLocally.push(this.newActivity);
+        // this.imageArray.unshift(this.newActivity.photoURL);
+        // this.firebaseFeedOperations.addFeed(this.newActivity);
+
+        console.log('activity-----', this.newActivity, this.activitiesStoredLocally);
+
+        this.newMessage = '';
       }
-      // const checkIfURL = isUrl(this.newMessage);
-      // console.log('new message is url??', checkIfURL);
-      /*
-      let newActivity: Activity = {
-        uid: this.user.uid,
-        actor: this.user.name,
-        verb: 'message',
-        object: this.newMessage,
-        likes: 0,
-        time: new Date().toISOString(),
-        photoURL: this.user.photoURL
-      };
-      */
-
-
-      //  this.newActivity = {
-      //   uid: this.user.uid,
-      //   actor: this.user.name,
-      //   verb: 'link',
-      //   object: this.newMessage,
-      //   likes: 0,
-      //   time: new Date().toISOString(),
-      //   photoURL: this.user.photoURL,
-      //   isLink: true,
-      //   linkContent: {
-      //     title: this.linkPreviewResponse.title,
-      //     url: this.linkPreviewResponse.url,
-      //     description: this.linkPreviewResponse.description,
-      //     image: this.linkPreviewResponse.image
-      //   }
-      // };
-
-      // this.activitiesStoredLocally.push(this.newActivity);
-      // this.imageArray.unshift(this.newActivity.photoURL);
-      // this.firebaseFeedOperations.addFeed(this.newActivity);
-
-      console.log('activity-----', this.newActivity, this.activitiesStoredLocally);
-
-      this.newMessage = '';
     }
-  }
   }
 
   addLikesToActivity(activity) {
