@@ -17,6 +17,7 @@ import { AuthenticationService } from '../../_core/_services/_authentication/aut
 import { GetstreamService } from '../../_core/_services/_getstream/getstream.service';
 import { Camera } from '@ionic-native/camera/ngx';
 import { FirebaseFeedOperationsService } from '../../_core/_services/_firebaseFeedOperarions/firebase-feed-operations.service';
+import { LinkPreviewService } from '../../_core/_services/_linkPreview/link-preview-.service';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { FirebaseFeedOperationsService } from '../../_core/_services/_firebaseFe
     AuthenticationService,
     GetstreamService,
     FirebaseFeedOperationsService,
-    Camera
+    Camera,
+    LinkPreviewService
   ]
 })
 export class UserModule { }

@@ -40,9 +40,18 @@ export class Upload {
       id?: string;
       uid: string;
       actor: string;
-      verb: string;
+      verb?: string;
       object: string;
       likes: number;
       time: string;
       photoURL: string;
+      isLink?: boolean;
+      linkContent?: {
+          title: string;
+          url: string;
+          image: string;
+          description: string;
+      };
+      isImage?: boolean;
+      imageLink?: string;
   }

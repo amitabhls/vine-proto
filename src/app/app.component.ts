@@ -50,10 +50,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    window.console.log = function() {};
+    // window.console.log = function() {};
     this.initializeApp();
     this.checkCurrentAuthStatus();
-    this.followOnGetstream();
   }
 
   ngOnDestroy() {
@@ -64,7 +63,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.checkNewLogin.unsubscribe();
     }
   }
-
 
   initializeApp() {
     this.platform.ready().then(() => {
@@ -77,14 +75,20 @@ export class AppComponent implements OnInit, OnDestroy {
     let token: string;
     token = this.storage.getToken();
     console.log('token from component', token);
+    if (token) {
+      this.presentLoading(2000);
+      this.router.navigateByUrl('user/feed');
+    } else {
+      this.checkCurrentAuthStatus();
+    }
   }
 
   checkCurrentAuthStatus(): void {
-    this.presentLoading();
     this.userAuthState = this.angularFireAuth.authState.subscribe(user => {
       console.log('user-->>', user);
       this.user = user;
       if (user) {
+        this.presentLoading(2000);
         this.ionicStorage.setToken(this.user.qa);
         this.ionicStorage.setUserID(this.user.uid);
         this.checkNewLogin = this.angularFirestore.collection('users/').doc<any>(user.uid).valueChanges().subscribe(response => {
@@ -100,7 +104,7 @@ export class AppComponent implements OnInit, OnDestroy {
               }
             } else {
               this.router.navigateByUrl('user/complete-registration');
-              this.followOnGetstream();
+              // this.followOnGetstream();
               if (this.checkNewLogin) {
                 this.checkNewLogin.unsubscribe();
               }
@@ -135,23 +139,23 @@ export class AppComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl('user/complete-registration');
   }
 
-  followOnGetstream() {
-    this.angularFirestore.collection('users/').valueChanges().subscribe(response => {
-      this.allUsers = response;
-    });
-    if (this.allUsers) {
-      this.allUsers.forEach(element => {
-        if (this.user.uid !== element.uid) {
-          this.getStream.followUser(this.user.uid, element.uid);
-          this.getStream.followUser(element.uid, this.user.uid);
-        }
-      });
-    }
-  }
+  // followOnGetstream() {
+  //   this.angularFirestore.collection('users/').valueChanges().subscribe(response => {
+  //     this.allUsers = response;
+  //   });
+  //   if (this.allUsers) {
+  //     this.allUsers.forEach(element => {
+  //       if (this.user.uid !== element.uid) {
+  //         this.getStream.followUser(this.user.uid, element.uid);
+  //         this.getStream.followUser(element.uid, this.user.uid);
+  //       }
+  //     });
+  //   }
+  // }
 
-  async presentLoading() {
+  async presentLoading(durationInput) {
     const loading = await this.loadingController.create({
-      duration: 3000,
+      duration: durationInput,
       content: 'Please wait...',
       translucent: true,
       cssClass: 'custom-class custom-loading'

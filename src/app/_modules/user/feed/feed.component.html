@@ -49,7 +49,18 @@
 								<sup><span>{{activity.likes}}</span></sup>
 							</ion-button>
 						</ion-item>
-						<p class="post-snippet">{{activity.object}}</p>
+						<div *ngIf="activity.isLink && !activity.isImage">
+							<ion-thumbnail *ngIf="activity.linkContent?.image" slot="start">
+								<img [src]="activity.linkContent?.image">
+							</ion-thumbnail>
+							<h3>{{activity.linkContent?.title}}</h3>
+							<p>{{activity.linkContent?.description}}</p>
+						</div>
+						<div *ngIf="!activity.isLink && activity.isImage">
+							<img [src]="activity.imageLink">
+						</div>
+						<p *ngIf="!activity.isLink && !activity.isImage" class="post-snippet">{{activity.object}}</p>
+						<a *ngIf="activity.isLink && !activity.isImage" [href]="activity.linkContent?.url" target="_blank">{{activity.object}}</a>
 					</div>
 				</ion-list>
 				<div class="row" *ngIf="!activitiesStoredLocally?.length && !loading" text-center>
