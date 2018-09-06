@@ -52,7 +52,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // window.console.log = function() {};
     this.initializeApp();
-    this.checkCurrentAuthStatus();
+    this.checkLoginStatus();
   }
 
   ngOnDestroy() {
@@ -74,11 +74,13 @@ export class AppComponent implements OnInit, OnDestroy {
   checkLoginStatus(): void {
     let token: string;
     token = this.storage.getToken();
-    console.log('token from component', token);
     if (token) {
-      this.presentLoading(2000);
+      console.log('token exist');
+      // this.presentLoading(1000);
+      // console.log('location', window.location);
       this.router.navigateByUrl('user/feed');
     } else {
+      console.log('token doesn\'t exist');
       this.checkCurrentAuthStatus();
     }
   }
@@ -88,7 +90,7 @@ export class AppComponent implements OnInit, OnDestroy {
       console.log('user-->>', user);
       this.user = user;
       if (user) {
-        this.presentLoading(2000);
+        // this.presentLoading(2000);
         this.ionicStorage.setToken(this.user.qa);
         this.ionicStorage.setUserID(this.user.uid);
         this.checkNewLogin = this.angularFirestore.collection('users/').doc<any>(user.uid).valueChanges().subscribe(response => {
