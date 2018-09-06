@@ -41,7 +41,7 @@ export class FeedComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.presentLoading(2000);
+    this.presentLoading(3000);
     // this.getFeed();
     // this.extractImageLink();
     this.getFeed();
@@ -77,7 +77,7 @@ export class FeedComponent implements OnInit, OnDestroy {
         this.user = res;
         console.log('user data--==', this.user);
         if (!this.user.isEdited) {
-          this.router.navigateByUrl('user/complete-registration');
+          this.router.navigateByUrl('user/complete-registration#complete-registration');
         }
       });
     }
@@ -89,6 +89,18 @@ export class FeedComponent implements OnInit, OnDestroy {
     this.testarray.length = 0;
     this.angularFirestore.collection(`users/`).valueChanges().subscribe(userData => {
       this.allUsersData = userData;
+      this.activitiesStoredLocally.forEach(activitiesElement => {
+        this.allUsersData.forEach(userDataElement => {
+          if (activitiesElement.uid === userDataElement.uid) {
+            this.imageArray.push(userDataElement.photoURL);
+            this.testarray.push(userDataElement.email);
+            return true;
+          } else {
+            return false;
+          }
+        });
+      });
+      /*
       for (let i = 0; i < this.activitiesStoredLocally.length; i = i + 1) {
         for (let j = 0; j < this.allUsersData.length; j = j + 1) {
           if (this.activitiesStoredLocally[i].uid === this.allUsersData[j].uid) {
@@ -97,15 +109,7 @@ export class FeedComponent implements OnInit, OnDestroy {
           }
         }
       }
-      console.log('emails in feed', this.testarray);
-      // this.activitiesStoredLocally.forEach(locallyStoredElement => {
-      //   this.allUsersData.forEach(userDataElement => {
-      //     if (locallyStoredElement.uid === userDataElement) {
-      //       this.imageArray.push(userDataElement.photoURL);
-      //       this.testarray.push(userDataElement.email);
-      //     }
-      //   });
-      // });
+*/
       // console.log('image array', this.imageArray);
       // console.log('email array', );
       /*
@@ -189,9 +193,10 @@ export class FeedComponent implements OnInit, OnDestroy {
             this.activities.push(data.data());
           });
         }
+        console.log('data from xyz', this.activities);
+        this.activitiesStoredLocally = this.activities;
+        this.changeImageLinkInFeed();
       });
-      this.activitiesStoredLocally = this.activities.reverse();
-      this.changeImageLinkInFeed();
     // .valueChanges().subscribe(response => {
     /*
     console.log('response response--->', response);
@@ -374,9 +379,9 @@ export class FeedComponent implements OnInit, OnDestroy {
   viewOtherProfile(activity): void {
     console.log('from feed other user', activity.uid);
     if (activity.uid === this.userID) {
-      this.router.navigateByUrl('/user/profile');
+      this.router.navigateByUrl('/user/profile#user-profile-edit');
     } else {
-      this.router.navigate(['/user/other-profile'], { queryParams: { otherUsersID: activity.uid } });
+      this.router.navigate(['/user/other-profile#other-user-profile-page'], { queryParams: { otherUsersID: activity.uid } });
     }
   }
 

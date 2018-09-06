@@ -1,3 +1,4 @@
+<a name="other-user-profile-page"></a>
 <ion-header class="header-vine">
 	<ion-toolbar>
 		<ion-back-button defaultHref="/user/feed">
@@ -7,7 +8,7 @@
 		<ion-title>{{loggedInUserName}}</ion-title>
 		<div class="user-profile-pic--header">
 			<img *ngIf="!loggedInUserPhotoURL" src="../../../assets/img/profile-img.png" alt="User Profile Image" />
-			<img *ngIf="loggedInUserPhotoURL" [src]="loggedInUserPhotoURL" alt="User Profile Image" [routerLink]="['/user/profile']" />
+			<img *ngIf="loggedInUserPhotoURL" [src]="loggedInUserPhotoURL" alt="User Profile Image" [routerLink]="['/user/profile#user-profile']" />
 		</div>
 	</ion-toolbar>
 </ion-header>

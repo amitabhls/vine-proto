@@ -54,7 +54,7 @@ export class UserProfileEditComponent implements OnInit, OnDestroy {
   }
 
   goToEditProfile(): void {
-      this.router.navigateByUrl('/user/edit-profile');
+      this.router.navigateByUrl('/user/edit-profile#user-profile-edit');
   }
 
 }

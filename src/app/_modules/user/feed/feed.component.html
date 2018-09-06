@@ -1,3 +1,4 @@
+<a name="feed-page"></a>
 <ion-header class="header-vine">
 	<ion-toolbar>
 		<ion-menu-button>
@@ -5,7 +6,7 @@
 		</ion-menu-button>
 		<ion-title>Vine</ion-title>
 		<div *ngIf="user" class="user-profile-pic--header">
-			<img [src]="user.photoURL" alt="User Profile Image" [routerLink]="[ '/user/profile']" />
+			<img [src]="user.photoURL" alt="User Profile Image" [routerLink]="[ '/user/profile#user-profile']" />
 		</div>
 	</ion-toolbar>
 </ion-header>
@@ -33,7 +34,7 @@
 
 				<!--  feeds list -->
 				<ion-list class="feed-list-wrap" *ngIf="activitiesStoredLocally?.length && !loading">
-					<div class="feed-list" *ngFor="let activity of activitiesStoredLocally.slice().reverse(); let i = index">
+					<div class="feed-list" *ngFor="let activity of activitiesStoredLocally; let i = index">
 						<ion-item>
 							<ion-avatar slot="start">
 								<!-- <img *ngIf="user.uid===activity.uid" [src]="user.photoURL" alt="Profile self Image" (click)="viewOtherProfile(activity)" /> -->

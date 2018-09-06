@@ -94,7 +94,7 @@ export class CompleteRegistrationComponent implements OnInit, OnDestroy {
         if (response) {
           if (response.isEdited) {
             console.log('redirected from complete registration');
-            this.router.navigateByUrl('user/feed');
+            this.router.navigateByUrl('user/feed#feed-page');
           } else {
             if (response.displayName) {
               this.name = response.displayName;
@@ -146,7 +146,7 @@ export class CompleteRegistrationComponent implements OnInit, OnDestroy {
     this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(updatedData));
     console.log('updated');
     console.log('redirected from complete registration 2');
-    this.router.navigateByUrl('user/feed');
+    this.router.navigateByUrl('user/feed#feed-page');
   }
 
   async presentLoading(duration: number) {
