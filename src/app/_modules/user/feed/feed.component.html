@@ -49,18 +49,20 @@
 								<sup><span>{{activity.likes}}</span></sup>
 							</ion-button>
 						</ion-item>
-						<div *ngIf="activity.isLink && !activity.isImage">
-							<ion-thumbnail *ngIf="activity.linkContent?.image" slot="start">
-								<img [src]="activity.linkContent?.image">
-							</ion-thumbnail>
-							<h3>{{activity.linkContent?.title}}</h3>
+						<div *ngIf="activity.isLink && !activity.isImage" class="image-and-text-wrap">
+							<div class="image-and-title-wrap">
+								<ion-thumbnail *ngIf="activity.linkContent?.image" slot="start">
+									<img [src]="activity.linkContent?.image">
+								</ion-thumbnail>
+								<h5>{{activity.linkContent?.title}}</h5>
+							</div>
 							<p>{{activity.linkContent?.description}}</p>
 						</div>
-						<div *ngIf="!activity.isLink && activity.isImage">
+						<div *ngIf="!activity.isLink && activity.isImage" class="only-image-upload-wrap">
 							<img [src]="activity.imageLink">
 						</div>
 						<p *ngIf="!activity.isLink && !activity.isImage" class="post-snippet">{{activity.object}}</p>
-						<a *ngIf="activity.isLink && !activity.isImage" [href]="activity.linkContent?.url" target="_blank">{{activity.object}}</a>
+						<a *ngIf="activity.isLink && !activity.isImage" [href]="activity.linkContent?.url" target="_blank" class="post-link">{{activity.object}}</a>
 					</div>
 				</ion-list>
 				<div class="row" *ngIf="!activitiesStoredLocally?.length && !loading" text-center>
@@ -74,7 +76,6 @@
 						<ion-spinner name="dots"></ion-spinner>
 						<div>Loading Feeds..</div>
 					</div>
-
 				</div>
 
 			</ion-col>
