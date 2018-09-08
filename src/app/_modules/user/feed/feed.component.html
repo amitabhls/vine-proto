@@ -59,8 +59,12 @@
 							</div>
 							<p>{{activity.linkContent?.description}}</p>
 						</div>
-						<div *ngIf="!activity.isLink && activity.isImage" class="only-image-upload-wrap">
+						<div *ngIf="!activity.isLink && activity.isImage && !activity.isYoutubeLink" class="only-image-upload-wrap">
 							<img [src]="activity.imageLink">
+						</div>
+						<div *ngIf="activity.isYoutubeLink && !activity.isLink && !activity.isImage" text-center>
+							<iframe [src]="domSanitizer(activity.youtubeLink)" height="207" width="368"
+							frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 						</div>
 						<p *ngIf="!activity.isLink && !activity.isImage" class="post-snippet">{{activity.object}}</p>
 						<a *ngIf="activity.isLink && !activity.isImage" [href]="activity.linkContent?.url" target="_blank" class="post-link">{{activity.object}}</a>
