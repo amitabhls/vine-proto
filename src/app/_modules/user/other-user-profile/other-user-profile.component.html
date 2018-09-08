@@ -3,12 +3,13 @@
 	<ion-toolbar>
 		<ion-back-button defaultHref="/user/feed">
 			<span class="fa fa-angle-left"></span>
-		  </ion-back-button>
-	  
-		<ion-title>{{loggedInUserName}}</ion-title>
+		</ion-back-button>
+
+		<ion-title>{{name}}</ion-title>
 		<div class="user-profile-pic--header">
 			<img *ngIf="!loggedInUserPhotoURL" src="../../../assets/img/profile-img.png" alt="User Profile Image" />
-			<img *ngIf="loggedInUserPhotoURL" [src]="loggedInUserPhotoURL" alt="User Profile Image" [routerLink]="['/user/profile#user-profile']" />
+			<img *ngIf="loggedInUserPhotoURL" [src]="loggedInUserPhotoURL" alt="User Profile Image" [routerLink]="['/user/profile']"
+			/>
 		</div>
 	</ion-toolbar>
 </ion-header>
@@ -22,8 +23,8 @@
 					<div class="others-profile">
 						<ion-item>
 							<ion-avatar slot="start">
-									<img *ngIf="!photoURL" src="../../../assets/img/profile-img.png" alt="User Profile Image" />
-									<img *ngIf="photoURL" [src]="photoURL" alt="User Profile Image" />
+								<img *ngIf="!photoURL" src="../../../assets/img/profile-img.png" alt="User Profile Image" />
+								<img *ngIf="photoURL" [src]="photoURL" alt="User Profile Image" />
 							</ion-avatar>
 							<ion-label>
 								<h2>{{email}}</h2>
@@ -47,10 +48,9 @@
 
 		<ion-row>
 			<ion-col size="12" offset="0" size-sm="10" offset-sm="1" size-md="8" offset-md="2" size-lg="6" offset-lg="3">
-					<!--  feeds list -->
-					<ion-list class="feed-list-wrap" *ngIf="selectedFeeds.length && !loading">
+				<!--  feeds list -->
+				<!-- <ion-list class="feed-list-wrap" *ngIf="selectedFeeds.length && !loading">
 					<div class="feed-list" *ngFor="let activity of selectedFeeds.slice().reverse(); let i = index">
-						<!-- <div *ngIf="i<=10"> -->
 						<ion-item>
 							<ion-avatar slot="start">
 							<img [src]="photoURL" alt="Profile Image"/>
@@ -61,14 +61,44 @@
 							</ion-label>
 						</ion-item>
 						<p class="post-snippet">{{activity.object}}</p>
-						<!-- </div> -->
 					</div>
-					</ion-list>
-					<div class="row" *ngIf="!selectedFeeds.length && !loading">
+					</ion-list> -->
+				<ion-list class="feed-list-wrap" *ngIf="selectedFeeds?.length && !loading">
+					<div class="feed-list" *ngFor="let activity of selectedFeeds.slice().reverse(); let i = index">
+						<ion-item>
+							<ion-avatar slot="start">
+								<img [src]="photoURL" alt="Profile Image" />
+							</ion-avatar>
+							<ion-label>
+								<h3>{{name}}</h3>
+								<h5>{{activity.time | date:"medium"}}</h5>
+								<h5 slot="end">Likes: {{activity.likes}}</h5>
+							</ion-label>
+						</ion-item>
+						<div *ngIf="activity.isLink" class="image-and-text-wrap">
+							<div class="image-and-title-wrap">
+								<ion-thumbnail *ngIf="activity.linkContent?.image" slot="start">
+									<img [src]="activity.linkContent?.image">
+								</ion-thumbnail>
+								<h5>{{activity.linkContent?.title}}</h5>
+							</div>
+							<p>{{activity.linkContent?.description}}</p>
+						</div>
+						<div *ngIf="activity.isImage" class="only-image-upload-wrap">
+							<img [src]="activity.imageLink">
+						</div>
+						<div *ngIf="activity.isYoutubeLink" text-center>
+							<youtube-player [videoId]="activity.youtubeLinkContent?.videoId" height="189" width="336"></youtube-player>
+						</div>
+						<p *ngIf="!activity.isLink && !activity.isImage" class="post-snippet">{{activity.object}}</p>
+						<a *ngIf="activity.isLink && !activity.isImage" [href]="activity.linkContent?.url" target="_blank" class="post-link">{{activity.object}}</a>
+					</div>
+				</ion-list>
+				<div class="row" *ngIf="!selectedFeeds.length && !loading">
 					<div class="ion-col text-center">
 						<p>No activities available</p>
 					</div>
-					</div>
+				</div>
 			</ion-col>
 		</ion-row>
 	</ion-grid>

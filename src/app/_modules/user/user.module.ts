@@ -18,6 +18,8 @@ import { GetstreamService } from '../../_core/_services/_getstream/getstream.ser
 import { Camera } from '@ionic-native/camera/ngx';
 import { FirebaseFeedOperationsService } from '../../_core/_services/_firebaseFeedOperarions/firebase-feed-operations.service';
 import { LinkPreviewService } from '../../_core/_services/_linkPreview/link-preview-.service';
+// import { YoutubeVideoPlayer } from '@ionic-native/youtube-video-player/ngx';
+import { YoutubePlayerModule } from 'ngx-youtube-player';
 
 @NgModule({
   imports: [
@@ -28,6 +30,7 @@ import { LinkPreviewService } from '../../_core/_services/_linkPreview/link-prev
     AngularFireStorageModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase, 'ionic-4-vine'),
+    YoutubePlayerModule
   ],
   declarations: [
     FeedComponent,
@@ -41,6 +44,7 @@ import { LinkPreviewService } from '../../_core/_services/_linkPreview/link-prev
     GetstreamService,
     FirebaseFeedOperationsService,
     Camera,
+    // YoutubeVideoPlayer,
     LinkPreviewService
   ]
 })

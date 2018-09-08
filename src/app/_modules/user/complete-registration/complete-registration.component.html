@@ -43,7 +43,7 @@
             </div>
             <ion-item>
               <ion-label position="floating">Email</ion-label>
-              <ion-input formControlName="userEmail" type="text" [(ngModel)]="email"></ion-input>
+              <ion-input formControlName="userEmail" type="text" [(ngModel)]="email" disabled></ion-input>
             </ion-item>
             <div text-center *ngIf="completeRegistrationForm.controls.userEmail.dirty && completeRegistrationForm.controls.userEmail.invalid">
               Please enter a valid email.

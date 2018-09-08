@@ -1,21 +1,24 @@
 <a name="login-page"></a>
 <ion-content class="login-bg">
 
-    <ion-grid no-padding>
-      <ion-row>
-        <ion-col no-padding>
-          <!-- the below div will have the cover image of the login page -->
-          <div class="cover-image-login">
-            <img src="../../../assets/img/fliqet-bg.png" alt="Cover Image" />
-          </div>  <!-- cover-image-login -->
-  
-          <h1 class="welcome-to-vine-txt">Welcome to Vine</h1>
-  
-          <ion-button (click)="onGoogleLogin()" class="grey-btn login-btn">Login</ion-button>
-  
-          <!-- <ion-button (click)=" onFacebookLogin()" class="grey-btn">Facebook</ion-button> -->
-        </ion-col>
-      </ion-row>
-    </ion-grid>
-  
-  </ion-content>
+  <ion-grid no-padding>
+    <ion-row>
+      <ion-col no-padding>
+        <!-- the below div will have the cover image of the login page -->
+        <div class="cover-image-login">
+          <img src="../../../assets/img/fliqet-bg.png" alt="Cover Image" />
+        </div> <!-- cover-image-login -->
+
+        <h1 class="welcome-to-vine-txt">Welcome to Vine</h1>
+
+        <ion-button (click)="onGoogleLogin()" class="grey-btn login-btn">Login</ion-button>
+        <br>
+        <!-- <div *ngIf="loader || loginInit" text-center>
+          <ion-spinner name="dots"></ion-spinner>
+        </div> -->
+        <!-- <ion-button (click)=" onFacebookLogin()" class="grey-btn">Facebook</ion-button> -->
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

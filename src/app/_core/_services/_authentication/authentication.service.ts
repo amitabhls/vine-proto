@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
-import { Platform } from '@ionic/angular';
+import { Platform, LoadingController } from '@ionic/angular';
 import AuthProvider = firebase.auth.AuthProvider;
 import { IonicStorageService } from '../_ionicStorage/ionic-storage.service';
 import { Observable } from 'rxjs';
@@ -21,7 +21,8 @@ export class AuthenticationService {
     private platform: Platform,
     private ionicStorage: IonicStorageService,
     private googlePlus: GooglePlus,
-    private router: Router
+    private router: Router,
+    private loadingController: LoadingController
   ) { }
   /**
    * @name loginInWithGoogle
@@ -29,6 +30,7 @@ export class AuthenticationService {
    * @description     This function is used for signing in with Google.
    */
   loginInWithGoogle() {
+    this.presentLoading(2000);
     if (this.platform.is('cordova')) {
       return this.nativeGoogleLogin();
     } else {
@@ -76,7 +78,18 @@ export class AuthenticationService {
       this.googlePlus.logout();
       this.ionicStorage.removeFromLocalStorage('isGoogleNativeLogin');
     }
+    localStorage.setItem('loginInit', 'false');
     this.router.navigateByUrl('/auth');
+  }
+
+  async presentLoading(durationInput) {
+    const loading = await this.loadingController.create({
+      duration: durationInput,
+      content: 'Please wait...',
+      translucent: true,
+      cssClass: 'custom-class custom-loading'
+    });
+    return await loading.present();
   }
 }
 

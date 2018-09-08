@@ -1,4 +1,3 @@
-<a name="feed-page"></a>
 <ion-header class="header-vine">
 	<ion-toolbar>
 		<ion-menu-button>
@@ -6,7 +5,7 @@
 		</ion-menu-button>
 		<ion-title>Vine</ion-title>
 		<div *ngIf="user" class="user-profile-pic--header">
-			<img [src]="user.photoURL" alt="User Profile Image" [routerLink]="[ '/user/profile#user-profile']" />
+			<img [src]="user.photoURL" alt="User Profile Image" [routerLink]="[ '/user/profile']" />
 		</div>
 	</ion-toolbar>
 </ion-header>
@@ -50,7 +49,7 @@
 								<sup><span>{{activity.likes}}</span></sup>
 							</ion-button>
 						</ion-item>
-						<div *ngIf="activity.isLink && !activity.isImage" class="image-and-text-wrap">
+						<div *ngIf="activity.isLink" class="image-and-text-wrap">
 							<div class="image-and-title-wrap">
 								<ion-thumbnail *ngIf="activity.linkContent?.image" slot="start">
 									<img [src]="activity.linkContent?.image">
@@ -59,12 +58,33 @@
 							</div>
 							<p>{{activity.linkContent?.description}}</p>
 						</div>
-						<div *ngIf="!activity.isLink && activity.isImage && !activity.isYoutubeLink" class="only-image-upload-wrap">
+						<div *ngIf="activity.isImage" class="only-image-upload-wrap">
 							<img [src]="activity.imageLink">
 						</div>
-						<div *ngIf="activity.isYoutubeLink && !activity.isLink && !activity.isImage" text-center>
-							<iframe [src]="domSanitizer(activity.youtubeLink)" height="207" width="368"
-							frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+						<!-- <div *ngIf="isPlatformCordova">
+							<div *ngIf="activity.isYoutubeLink && !activity.isLink && !activity.isImage" class="image-and-text-wrap" text-center>
+								<a (click)=" youtubeNativePlayer(activity.youtubeLinkContent?.videoId)">
+									Play
+								</a>
+								<div class="image-and-title-wrap">
+									<ion-thumbnail *ngIf="activity.youtubeLinkContent?.linkPreview.image" slot="start">
+										<img [src]="activity.youtubeLinkContent?.linkPreview.image">
+									</ion-thumbnail>
+									<h5>{{activity.youtubeLinkContent?.linkPreview.title}}</h5>
+								</div>
+								<p>{{activity.youtubeLinkContent?.linkPreview.description}}</p>
+							</div>
+						</div>
+						<div *ngIf="!isPlatformCordova">
+							<div *ngIf="activity.isYoutubeLink && !activity.isLink && !activity.isImage" text-center>
+								<iframe [src]="domSanitizer(activity.youtubeLinkContent?.embedLink)" height="207" width="368" frameborder="0" allow="autoplay; encrypted-media"
+								 allowfullscreen></iframe>
+							</div>
+						</div> -->
+						<div *ngIf="activity.isYoutubeLink" text-center>
+							<youtube-player [videoId]="activity.youtubeLinkContent?.videoId" height="189" width="336"></youtube-player>
+							<!-- <iframe [src]="domSanitizer(activity.youtubeLinkContent?.embedLink)" height="207" width="368" frameborder="0" allow="autoplay; encrypted-media"
+							 allowfullscreen></iframe> -->
 						</div>
 						<p *ngIf="!activity.isLink && !activity.isImage" class="post-snippet">{{activity.object}}</p>
 						<a *ngIf="activity.isLink && !activity.isImage" [href]="activity.linkContent?.url" target="_blank" class="post-link">{{activity.object}}</a>
@@ -82,7 +102,6 @@
 						<div>Loading Feeds..</div>
 					</div>
 				</div>
-
 			</ion-col>
 		</ion-row>
 	</ion-grid>

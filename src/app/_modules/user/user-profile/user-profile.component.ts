@@ -115,7 +115,7 @@ export class UserProfileComponent implements OnInit, OnDestroy {
     };
     this.angularFirestore.collection(`users/`).doc(this.userID).set(updatedData);
     this.ionicStorage.setOnlocalStorage('userData', JSON.stringify(updatedData));
-    this.router.navigateByUrl('/user/profile#user-profile');
+    this.router.navigateByUrl('/user/profile');
   }
 
   /*
