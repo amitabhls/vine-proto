@@ -18,6 +18,7 @@
     <preference name="FadeSplashScreenDuration" value="300" />
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
+    <preference name="YouTubeDataApiKey" value="AIzaSyCVf_8U2Ud9E7wcq7mlYMuhYQroVskfRCM" />
     <preference name="SplashScreenDelay" value="3000" />
     <platform name="android">
         <allow-intent href="market:*" />
@@ -84,11 +85,6 @@
     <plugin name="cordova-plugin-nativestorage" spec="^2.3.2" />
     <plugin name="cordova-plugin-googleplus" spec="^5.3.0">
         <variable name="REVERSED_CLIENT_ID" value="com.googleusercontent.apps.234309026687-q6bom9ps7pnjb3ch03e62i7a9m2lr6vg" />
-    </plugin>
-    <plugin name="twitter-connect-plugin" spec="https://github.com/chroa/twitter-connect-plugin">
-        <variable name="FABRIC_KEY" value="18a3c5de34e526a7bc5031a7f7c53ae4bbb3eab2" />
-        <variable name="TWITTER_KEY" value="B9zGF0eYoEltQeDBeRaeZRvyY" />
-        <variable name="TWITTER_SECRET" value="UTo5G9rfM0Q4LnPPvgHfVe1PC3Gw9kPTm8r0w9f8gYXXGNkLdd" />
     </plugin>
     <plugin name="cordova-plugin-camera" spec="^4.0.3" />
     <engine name="android" spec="7.0.0" />
