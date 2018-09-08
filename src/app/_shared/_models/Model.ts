@@ -54,4 +54,6 @@ export class Upload {
       };
       isImage?: boolean;
       imageLink?: string;
+      isYoutubeLink?: boolean;
+      youtubeLink?: string;
   }
