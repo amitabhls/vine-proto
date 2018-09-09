@@ -5,7 +5,7 @@
 		</ion-menu-button>
 		<ion-title>Vine</ion-title>
 		<div *ngIf="user" class="user-profile-pic--header">
-			<img [src]="user.photoURL" alt="User Profile Image" [routerLink]="[ '/user/profile']" />
+			<img *ngIf="user.photoURL" [src]="user.photoURL" alt="User Profile Image" [routerLink]="[ '/user/profile']" />
 		</div>
 	</ion-toolbar>
 </ion-header>
@@ -37,7 +37,7 @@
 						<ion-item>
 							<ion-avatar slot="start">
 								<!-- <img *ngIf="user.uid===activity.uid" [src]="user.photoURL" alt="Profile self Image" (click)="viewOtherProfile(activity)" /> -->
-								<img [src]="imageArray[i]" alt="Profile other Image" (click)="viewOtherProfile(activity)" />
+								<img *ngIf="imageArray[i]" [src]="imageArray[i]" alt="Profile other Image" (click)="viewOtherProfile(activity)" />
 							</ion-avatar>
 							<ion-label>
 								<h3 *ngIf="user.uid===activity.uid" (click)="viewOtherProfile(activity)">{{user.name}}</h3>
@@ -59,7 +59,7 @@
 							<p>{{activity.linkContent?.description}}</p>
 						</div>
 						<div *ngIf="activity.isImage" class="only-image-upload-wrap">
-							<img [src]="activity.imageLink">
+							<img *ngIf="activity.imageLink" [src]="activity.imageLink">
 						</div>
 						<!-- <div *ngIf="isPlatformCordova">
 							<div *ngIf="activity.isYoutubeLink && !activity.isLink && !activity.isImage" class="image-and-text-wrap" text-center>
